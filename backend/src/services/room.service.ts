@@ -103,11 +103,16 @@ export class RoomService {
 
     await this.roomRepository.update(id, updateRoomDto);
 
-    return this.roomRepository.findOne({
+    const updatedRoom = await this.roomRepository.findOne({
       where: { id },
     });
-  }
 
+    if (!updatedRoom) {
+      throw new NotFoundException(`Room with ID ${id} not found after update`);
+    }
+
+    return updatedRoom;
+  }
   async remove(id: string, userId: string): Promise<void> {
     const room = await this.roomRepository.findOne({
       where: { id },

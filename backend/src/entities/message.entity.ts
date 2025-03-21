@@ -37,7 +37,7 @@ export class Message {
   // Relationships
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
-  author: User;
+  user: User;
 
   @ManyToOne(() => Room, (room) => room.messages)
   @JoinColumn({ name: 'room_id' })
