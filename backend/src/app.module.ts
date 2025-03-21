@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { JwtModule } from '@nestjs/jwt';
 import { join } from 'path/posix';
 import { AuthModule } from './modules/auth.module';
 import { RoomModule } from './modules/room.module';
@@ -18,10 +17,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
       synchronize: true,
-    }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '2h' },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
