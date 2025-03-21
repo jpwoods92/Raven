@@ -19,8 +19,8 @@ export class Message {
   @Column({ name: 'user_id', nullable: false })
   userId: string;
 
-  @Column({ name: 'body', type: 'text', nullable: false })
-  body: string;
+  @Column({ name: 'content', type: 'text', nullable: false })
+  content: string;
 
   @Column({ name: 'parent_message_id', nullable: true })
   parentMessageId: string | null;

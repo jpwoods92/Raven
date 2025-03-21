@@ -2,31 +2,38 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private configService: ConfigService,
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {
+    const jwtSecret = configService.get<string>('JWT_SECRET');
+
+    // Add null check to ensure JWT_SECRET exists
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined in environment variables');
+    }
+
     super({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      secretOrKey: jwtSecret,
     });
   }
 
   async validate(payload: { sub: string }) {
     const { sub: id } = payload;
-    const user = await this.userModel.findById(id);
-
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-
     return user;
   }
 }

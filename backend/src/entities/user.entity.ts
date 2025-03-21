@@ -7,27 +7,33 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { RoomMembership } from './room-membership.entity';
-import { SchemaFactory } from '@nestjs/mongoose';
+import { Message } from './message.entity';
+import { Room } from './room.entity';
+import { Exclude } from 'class-transformer';
 
-@Entity('users')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ unique: true })
+  username: string;
+
+  @Column({ unique: true })
   email: string;
 
-  @Column({ name: 'avatar_url', nullable: false, length: 245 })
-  avatarUrl: string;
+  @Column()
+  @Exclude({ toPlainOnly: true })
+  password: string;
 
-  @Column({ name: 'password_digest', nullable: false })
-  passwordDigest: string;
+  @Column({ name: 'display_name', nullable: true })
+  displayName: string;
 
-  @Column({ name: 'session_token', unique: true, nullable: false })
-  sessionToken: string;
+  @Column({ nullable: true })
+  avatar: string;
 
-  @Column({ default: 'guest', nullable: false, unique: true })
-  username: string;
+  @Column({ default: false })
+  isOnline: boolean;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -35,11 +41,12 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @OneToMany(() => RoomMembership, (roomMembership) => roomMembership.user)
+  @OneToMany(() => RoomMembership, (membership) => membership.user)
   roomMemberships: RoomMembership[];
 
-  // This is a virtual property (not stored in DB)
-  password: string;
-}
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[];
 
-export const UserSchema = SchemaFactory.createForClass(User);
+  @OneToMany(() => Room, (room) => room.ownerId)
+  ownedRooms: Room[];
+}
