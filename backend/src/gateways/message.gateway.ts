@@ -33,15 +33,15 @@ export class MessageGateway
   async handleConnection(client: Socket) {
     try {
       // Extract JWT token from handshake
-      const token = client.handshake.auth.token;
+      const token = client.handshake.auth.token as string;
       if (!token) {
-        await client.disconnect();
+        client.disconnect();
         return;
       }
 
       // Validate token
-      const payload = await this.jwtService.verify(token);
-      client.data.user = payload;
+      const payload: { id: string } = await this.jwtService.verify(token);
+      client.data = { user: payload };
 
       // Join user to their user-specific room for private messages
       await client.join(`user:${payload.id}`);
@@ -49,10 +49,10 @@ export class MessageGateway
       if (err instanceof Error) {
         console.error('Connection error:', err.message);
       }
-      await client.disconnect();
+      client.disconnect();
     }
   }
-  handleDisconnect(client: Socket) {
+  handleDisconnect() {
     // Clean up any resources if needed
   }
 
@@ -63,11 +63,13 @@ export class MessageGateway
     @MessageBody() roomId: string,
   ) {
     // Add user to room channel
-    client.join(`room:${roomId}`);
+    await client.join(`room:${roomId}`);
+
+    const userId = (client.data as { user: { id: string } }).user.id;
 
     // Could notify other users that this user joined the room
     this.server.to(`room:${roomId}`).emit('userJoined', {
-      userId: client.data.user.id,
+      userId,
       roomId,
     });
   }
@@ -78,11 +80,12 @@ export class MessageGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() roomId: string,
   ) {
-    client.leave(`room:${roomId}`);
+    await client.leave(`room:${roomId}`);
+    const userId = (client.data as { user: { id: string } }).user.id;
 
     // Could notify other users that this user left the room
     this.server.to(`room:${roomId}`).emit('userLeft', {
-      userId: client.data.user.id,
+      userId,
       roomId,
     });
   }
@@ -94,7 +97,7 @@ export class MessageGateway
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
     try {
-      const userId = client.data.user.id;
+      const userId = (client.data as { user: { id: string } }).user.id;
       const message = await this.messageService.create(
         userId,
         createMessageDto,
@@ -107,7 +110,10 @@ export class MessageGateway
 
       return { success: true, message };
     } catch (error) {
-      return { success: false, error: error.message };
+      if (error instanceof Error) {
+        return { success: false, error: error.message };
+      }
+      return { success: false, error: 'An unknown error occurred' };
     }
   }
 }
