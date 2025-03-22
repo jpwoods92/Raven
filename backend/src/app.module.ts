@@ -7,13 +7,17 @@ import { RoomMembershipModule } from './modules/room-membership.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user.module';
 import { MessageModule } from './modules/message.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: String(process.env.DATABASE_HOST),
-      port: parseInt(process.env.DATABASE_PORT as string),
+      port: Number(process.env.DATABASE_PORT),
       username: String(process.env.DATABASE_USER),
       password: String(process.env.DATABASE_PASSWORD),
       database: String(process.env.DATABASE_NAME),
