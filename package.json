@@ -1,0 +1,14 @@
+{
+  "name": "slackr2",
+  "author": "Jackson Woods",
+  "version": "1.0.0",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "postinstall": "cd backend && npm install",
+    "start": "cd backend && npm run start:prod",
+    "make": "docker-compose up -d",
+    "heroku-postbuild": "cd frontend && npm install && npm run build && mkdir -p ../backend/public && cp -r build/* ../backend/public/"
+  }
+}
