@@ -1,31 +1,31 @@
-const path = require("path");
+const path = require('path');
 
 module.exports = {
-  mode: "development", // or 'production' for minified output
-  entry: path.resolve(__dirname, "hook.jsx"), // Corrected path
+  mode: 'development', // or 'production' for minified output
+  entry: path.resolve(__dirname, './src/index.tsx'), // Corrected path
   output: {
-    path: path.resolve(__dirname, "./dist"),
-    filename: "bundle.js",
+    path: path.resolve(__dirname, './dist'),
+    filename: 'bundle.js',
     clean: true, // Clean the output directory before emit
   },
   resolve: {
-    extensions: [".js", ".jsx", "*"],
+    extensions: ['.js', '.jsx', '*'],
     fallback: {
       path: false,
       fs: false,
       os: false,
     },
   },
-  devtool: "source-map", // More performant for production
+  devtool: 'source-map', // More performant for production
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             // Changed 'query' to 'options' as per webpack 5 standards
-            presets: ["@babel/env", "@babel/react"],
+            presets: ['@babel/env', '@babel/react'],
           },
         },
         exclude: /node_modules/,
@@ -34,9 +34,9 @@ module.exports = {
   },
   // Added webpack 5 specific optimizations
   optimization: {
-    moduleIds: "deterministic",
+    moduleIds: 'deterministic',
     splitChunks: {
-      chunks: "async",
+      chunks: 'async',
       minSize: 20000,
       minRemainingSize: 0,
       minChunks: 1,
@@ -59,6 +59,6 @@ module.exports = {
   },
   // Better performance settings
   performance: {
-    hints: process.env.NODE_ENV === "production" ? "warning" : false,
+    hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
   },
 };
