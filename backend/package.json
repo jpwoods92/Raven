@@ -4,7 +4,7 @@
   "description": "",
   "author": "Jackson Woods",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "ISC",
   "scripts": {
     "build": "nest build",
     "heroku-postbuild": "cd ../frontend && npm install && npm run build && cp -r build/* ../backend/public/",

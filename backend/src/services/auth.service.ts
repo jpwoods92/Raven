@@ -16,7 +16,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto): Promise<{ token: string }> {
+  async register(registerDto: RegisterDto): Promise<{
+    token: string;
+    user: { id: string; email: string; username: string };
+  }> {
     const { email, password, username } = registerDto;
 
     // Check if user already exists
@@ -45,7 +48,14 @@ export class AuthService {
       email: newUser.email,
     });
 
-    return { token };
+    return {
+      token,
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        username: newUser.username,
+      },
+    };
   }
 
   async login(loginDto: LoginDto): Promise<{
