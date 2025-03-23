@@ -45,19 +45,6 @@ const roomSlice = createSlice({
         state.currentRoomId = null;
       }
     },
-    // Manual action to receive rooms (if not using RTK Query)
-    receiveRooms: (state, action: PayloadAction<Room[]>) => {
-      const roomsById: Record<string, Room> = {};
-      const roomIds: string[] = [];
-
-      action.payload.forEach((room) => {
-        roomsById[room.id] = room;
-        roomIds.push(room.id);
-      });
-
-      state.rooms = roomsById;
-      state.allRoomIds = roomIds;
-    },
     addRoom: (state, action: PayloadAction<Room>) => {
       const room = action.payload;
       state.rooms[room.id] = room;
@@ -139,14 +126,7 @@ export const selectCurrentRoom = (state: { rooms: RoomState }) =>
 export const selectJoinedRooms = (state: { rooms: RoomState }) =>
   state.rooms.joinedRooms.map((id) => state.rooms.rooms[id]).filter(Boolean);
 
-export const {
-  setCurrentRoom,
-  joinRoom,
-  leaveRoom,
-  receiveRooms,
-  addRoom,
-  updateRoom,
-  removeRoom,
-} = roomSlice.actions;
+export const { setCurrentRoom, joinRoom, leaveRoom, addRoom, updateRoom, removeRoom } =
+  roomSlice.actions;
 
 export default roomSlice.reducer;

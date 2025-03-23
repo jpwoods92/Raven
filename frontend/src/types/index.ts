@@ -12,6 +12,7 @@ export interface Room {
   createdAt: string;
   updatedAt: string;
   ownerId: string;
+  isPrivate: boolean;
 }
 
 export interface Message {

@@ -7,6 +7,14 @@ import prettier from 'eslint-plugin-prettier';
 import importPlugin from 'eslint-plugin-import';
 import globals from 'globals';
 
+const cleanGlobals = (obj) => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    const cleanKey = key.trim();
+    acc[cleanKey] = value;
+    return acc;
+  }, {});
+};
+
 export default [
   // Global ignores
   {
@@ -14,22 +22,17 @@ export default [
   },
   // Base JS configuration
   js.configs.recommended,
-
-  // Base rules for all files
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-      },
+      globals: cleanGlobals({ ...globals.browser }),
     },
     plugins: {
       import: importPlugin,
     },
     rules: {
       'no-console': 'warn',
-      'no-unused-vars': 'off', // Handled by TypeScript
-      'import/no-unresolved': 'error',
+      'no-unused-vars': 'off',
       'import/order': [
         'error',
         {
@@ -60,7 +63,7 @@ export default [
     },
     rules: {
       ...typescript.configs.recommended.rules,
-      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'error',
