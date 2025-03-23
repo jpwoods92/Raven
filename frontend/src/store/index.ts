@@ -1,10 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+
 import { api } from '../services/api';
 import authReducer from '../slices/authSlice';
-import roomReducer from '../slices/roomSlice';
 import modalReducer from '../slices/modalSlice';
+import roomReducer from '../slices/roomSlice';
 
 export const store = configureStore({
   reducer: {
