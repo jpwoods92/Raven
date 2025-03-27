@@ -1,20 +1,20 @@
+import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
 
-import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
-import NavLinks from './nav_component'
-import CallToAction from './call_to_action'
-import MarketingComponent from './marketing'
+import CallToAction from './call_to_action';
+import MarketingComponent from './marketing';
+import NavLinks from './nav_component';
 
 class Splash extends React.Component {
-  render () {
+  render() {
     return (
-      <div className='body'>
-        <NavLinks/>
+      <div className="body">
+        <NavLinks />
         <CallToAction />
         <MarketingComponent />
       </div>
-    )
+    );
   }
 }
 
-export default withRouter(Splash)
+export default withRouter(Splash);

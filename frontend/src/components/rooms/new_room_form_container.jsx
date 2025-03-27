@@ -1,13 +1,15 @@
-import { connect } from 'react-redux'
-import { closeModal } from '../../actions/modal_actions'
-import NewRoomForm from './new_room_form'
+import { connect } from 'react-redux';
 
-const mapStateToProps = state => ({
-  currentUserId: state.session.currentUserId
-})
+import { closeModal } from '../../actions/modal_actions';
 
-const mapDispatchToProps = dispatch => ({
-  closeModal: () => dispatch(closeModal())
-})
+import NewRoomForm from './new_room_form';
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewRoomForm)
+const mapStateToProps = (state) => ({
+  currentUserId: state.session.currentUserId,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  closeModal: () => dispatch(closeModal()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewRoomForm);

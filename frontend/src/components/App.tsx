@@ -1,17 +1,17 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import loggedInIcon from '../assets/images/logged-in-icon.png';
 import { logout } from '../slices/authSlice';
-import { RootState } from '../store';
+import { useAppSelector } from '../store';
 
 import MessagesAreaContainer from './messages/messages_area_container';
 import { RoomsList } from './rooms/RoomsList';
 
 const MainApp = () => {
   const dispatch = useDispatch();
-  const username = useSelector((state: RootState) => state.auth.user?.username);
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const username = useAppSelector((state) => state.auth.user?.username);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

@@ -1,21 +1,16 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import RoomListItem from './room_list_item_container';
+import { RoomsListItem } from './RoomsListItem';
 
 import addChannel from '@/assets/add-channel-icon.png';
 import { openModal } from '@/slices/modalSlice';
-import { setCurrentRoom } from '@/slices/roomSlice';
-import { RootState } from '@/store';
+import { useAppSelector } from '@/store';
 
 export const RoomsList = () => {
   const dispatch = useDispatch();
-  const allRoomIds = useSelector((state: RootState) => state.rooms.allRoomIds);
-  const rooms = useSelector((state: RootState) => state.rooms.rooms);
-
-  const handleClick = (id: string) => {
-    dispatch(setCurrentRoom(id));
-  };
+  const allRoomIds = useAppSelector((state) => state.rooms.allRoomIds);
+  const rooms = useAppSelector((state) => state.rooms.rooms);
 
   const handleOpenModal = (modalName: string) => {
     dispatch(openModal(modalName));
@@ -46,7 +41,7 @@ export const RoomsList = () => {
       </div>
       <ul className="roomsList">
         {regularRooms.map((roomId) => (
-          <RoomListItem key={roomId} room={rooms[roomId]} handleClick={handleClick} />
+          <RoomsListItem key={roomId} roomId={roomId} />
         ))}
       </ul>
       <h2 className="channels">Direct Messages</h2>
@@ -55,7 +50,7 @@ export const RoomsList = () => {
       </button>
       <ul className="roomsList">
         {privateRooms.map((roomId) => (
-          <RoomListItem key={roomId} room={rooms[roomId]} handleClick={handleClick} />
+          <RoomsListItem key={roomId} roomId={roomId} />
         ))}
       </ul>
     </div>

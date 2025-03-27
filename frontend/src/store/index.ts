@@ -7,14 +7,20 @@ import authReducer from '../slices/authSlice';
 import modalReducer from '../slices/modalSlice';
 import roomReducer from '../slices/roomSlice';
 
+import { roomApi } from '@/services/room';
+import { userApi } from '@/services/user';
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     rooms: roomReducer,
     modal: modalReducer,
+    [userApi.reducerPath]: userApi.reducer,
+    [roomApi.reducerPath]: roomApi.reducer,
     [api.reducerPath]: api.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware, userApi.middleware, roomApi.middleware),
 });
 
 // Enable refetchOnFocus and refetchOnReconnect

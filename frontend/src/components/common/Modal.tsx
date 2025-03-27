@@ -1,40 +1,42 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import NewRoomForm from '../rooms/new_room_form';
-import NewDMForm from '../rooms/new_dm_form';
+
 import { closeModal } from '../../slices/modalSlice';
+import { RootState } from '../../store';
+import NewDMForm from '../rooms/new_dm_form';
+import NewRoomForm from '../rooms/new_room_form';
 
 export const Modal = () => {
   const dispatch = useDispatch();
-  const modal = useSelector((state: RootState) => state.modal)
-  
+  const modal = useSelector((state: RootState) => state.modal);
+
   if (!modal) {
-    return null
+    return null;
   }
-  let component
+  let component;
   switch (modal) {
     case 'newRoom':
-      component = <NewRoomForm />
-      break
+      component = <NewRoomForm />;
+      break;
     case 'newDMForm':
-      component = <NewDMForm />
-      break
+      component = <NewDMForm />;
+      break;
     default:
-      return null
+      return null;
   }
-
 
   const handleClose = () => {
     dispatch(closeModal());
-  }
-  
+  };
+
   return (
-    <div className="modal-background" >
-      <button className='x-button' onClick={handleClose}>X</button>
-      <div className="modal-child" onClick={e => e.stopPropagation()}>
+    <div className="modal-background">
+      <button className="x-button" onClick={handleClose}>
+        X
+      </button>
+      <div className="modal-child" onClick={(e) => e.stopPropagation()}>
         {component}
       </div>
     </div>
-  )
-}
+  );
+};

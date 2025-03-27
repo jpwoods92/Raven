@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Room } from '../types';
+
 import { api } from '../services/api';
+import { Room } from '../types';
 
 interface RoomState {
   currentRoomId: string | null;
