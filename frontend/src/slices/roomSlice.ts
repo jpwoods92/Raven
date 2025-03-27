@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { api } from '../services/api';
 import { Room } from '../types';
+
+import { roomApi } from '@/services/room';
 
 interface RoomState {
   currentRoomId: string | null;
@@ -76,13 +77,13 @@ const roomSlice = createSlice({
   // Integrate with RTK Query results
   extraReducers: (builder) => {
     // When RTK Query starts loading rooms
-    builder.addMatcher(api.endpoints.getRooms.matchPending, (state) => {
+    builder.addMatcher(roomApi.endpoints.getRooms.matchPending, (state) => {
       state.isLoading = true;
       state.error = null;
     });
 
     // When RTK Query successfully fetches rooms
-    builder.addMatcher(api.endpoints.getRooms.matchFulfilled, (state, { payload }) => {
+    builder.addMatcher(roomApi.endpoints.getRooms.matchFulfilled, (state, { payload }) => {
       state.isLoading = false;
 
       // Create a record of rooms by ID
@@ -99,13 +100,13 @@ const roomSlice = createSlice({
     });
 
     // When RTK Query fails to fetch rooms
-    builder.addMatcher(api.endpoints.getRooms.matchRejected, (state, { error }) => {
+    builder.addMatcher(roomApi.endpoints.getRooms.matchRejected, (state, { error }) => {
       state.isLoading = false;
       state.error = error.message || 'Failed to fetch rooms';
     });
 
     // When a new room is created
-    builder.addMatcher(api.endpoints.createRoom.matchFulfilled, (state, { payload }) => {
+    builder.addMatcher(roomApi.endpoints.createRoom.matchFulfilled, (state, { payload }) => {
       state.rooms[payload.id] = payload;
       if (!state.allRoomIds.includes(payload.id)) {
         state.allRoomIds.push(payload.id);
