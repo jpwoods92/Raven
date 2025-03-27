@@ -18,7 +18,7 @@ const cleanGlobals = (obj) => {
 export default [
   // Global ignores
   {
-    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.git/**'],
+    ignores: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.git/**', 'webpack.config.js'],
   },
   // Base JS configuration
   js.configs.recommended,

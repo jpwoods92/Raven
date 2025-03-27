@@ -1,22 +1,26 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+// Determine the mode from environment variable, default to 'development'
+const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  mode: 'development', // or 'production' for minified output
-  entry: path.resolve(__dirname, './src/index.tsx'), // Corrected path
+  mode: isProduction ? 'production' : 'development',
+  entry: path.resolve(__dirname, './src/index.tsx'),
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js',
+    filename: isProduction ? '[name].[contenthash].js' : 'bundle.js',
     clean: true, // Clean the output directory before emit
   },
   resolve: {
-    extensions: ['.js', '.jsx', '*'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     fallback: {
       path: false,
       fs: false,
       os: false,
     },
   },
-  devtool: 'source-map', // More performant for production
+  devtool: isProduction ? 'source-map' : 'eval-source-map', // Better source maps for development
   module: {
     rules: [
       {
@@ -24,7 +28,6 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            // Changed 'query' to 'options' as per webpack 5 standards
             presets: ['@babel/env', '@babel/react'],
           },
         },
@@ -47,9 +50,38 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+            options: { minimize: isProduction },
+          },
+        ],
+      },
     ],
   },
-  // Added webpack 5 specific optimizations
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src/index.html'),
+      filename: 'index.html',
+      inject: 'body',
+      minify: isProduction
+        ? {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
+          }
+        : false,
+    }),
+  ],
   optimization: {
     moduleIds: 'deterministic',
     splitChunks: {
@@ -73,9 +105,18 @@ module.exports = {
         },
       },
     },
+    minimize: isProduction,
   },
-  // Better performance settings
   performance: {
-    hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
+    hints: isProduction ? 'warning' : false,
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: process.env.FRONTEND_PORT || 8080,
+    hot: true,
+    historyApiFallback: true,
   },
 };
