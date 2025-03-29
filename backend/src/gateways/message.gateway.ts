@@ -13,12 +13,14 @@ import { MessageService } from '../services/message.service';
 import { CreateMessageDto } from '../dto/message/create-message.dto';
 import { JwtService } from '@nestjs/jwt';
 import { WsJwtGuard } from '../guards/ws-jwt.guard';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
+@ApiTags('messages')
 export class MessageGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
@@ -30,6 +32,9 @@ export class MessageGateway
     private readonly jwtService: JwtService,
   ) {}
 
+  @ApiOperation({ summary: 'Handle WebSocket connection' })
+  @ApiResponse({ status: 200, description: 'Connection successful' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async handleConnection(client: Socket) {
     try {
       // Extract JWT token from handshake
@@ -58,6 +63,9 @@ export class MessageGateway
 
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('joinRoom')
+  @ApiOperation({ summary: 'Join a room' })
+  @ApiResponse({ status: 200, description: 'Joined room successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async handleJoinRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() roomId: string,
@@ -76,6 +84,9 @@ export class MessageGateway
 
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('leaveRoom')
+  @ApiOperation({ summary: 'Leave a room' })
+  @ApiResponse({ status: 200, description: 'Left room successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async handleLeaveRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() roomId: string,
@@ -92,6 +103,9 @@ export class MessageGateway
 
   @UseGuards(WsJwtGuard)
   @SubscribeMessage('sendMessage')
+  @ApiOperation({ summary: 'Send a message' })
+  @ApiResponse({ status: 200, description: 'Message sent successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async handleSendMessage(
     @ConnectedSocket() client: Socket,
     @MessageBody() createMessageDto: CreateMessageDto,

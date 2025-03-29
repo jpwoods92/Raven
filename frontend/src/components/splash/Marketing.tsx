@@ -1,6 +1,11 @@
 import React from 'react';
 
-export default () => {
+import iconChat from '@/assets/iconChat.png';
+import iconIntegration from '@/assets/iconIntegration.png';
+import iconSearch from '@/assets/iconSearch.png';
+import iconSecurity from '@/assets/iconSecurity.png';
+
+const Marketing = () => {
   return (
     <div className="marketing-card">
       <h3 id="marketing-title">The place where you can work forever</h3>
@@ -12,7 +17,7 @@ export default () => {
       <div className="topics">
         <div>
           <section>
-            <img id="channels-icon" alt="slackr-channels-img" src={window.iconChat} />
+            <img id="channels-icon" alt="slackr-channels-img" src={iconChat} />
             <h3 id="channels-title">Channels</h3>
           </section>
           <p id="channels-body">
@@ -22,7 +27,7 @@ export default () => {
         </div>
         <div>
           <section>
-            <img id="search-icon" alt="slackr-search-img" src={window.iconSearch} />
+            <img id="search-icon" alt="slackr-search-img" src={iconSearch} />
             <h3 id="search-title">Search</h3>
           </section>
           <p id="search-body">
@@ -32,7 +37,7 @@ export default () => {
         </div>
         <div>
           <section>
-            <img id="integration-icon" alt="slackr-integration-img" src={window.iconIntegration} />
+            <img id="integration-icon" alt="slackr-integration-img" src={iconIntegration} />
             <h3 id="integration-title">Integrations</h3>
           </section>
           <p id="integration-body">
@@ -42,15 +47,17 @@ export default () => {
         </div>
         <div>
           <section>
-            <img id="security-icon" alt="slackr-security-img" src={window.iconSecurity} />
+            <img id="security-icon" alt="slackr-security-img" src={iconSecurity} />
             <h3 id="security-title">Security</h3>
           </section>
           <p id="security-body">
             Next level cred actually banh mi typewriter meh tote bag blog biodiesel vaporware DIY
-            you probably haven't heard of them raclette.
+            you probably haven&apos;t heard of them raclette.
           </p>
         </div>
       </div>
     </div>
   );
 };
+
+export default Marketing;

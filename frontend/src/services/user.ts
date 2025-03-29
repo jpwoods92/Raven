@@ -130,10 +130,12 @@ export const {
   useCreateUserMutation,
   useGetAllUsersQuery,
   useGetUserByUsernameQuery,
+  useLazyGetUserByUsernameQuery,
   useGetUserByEmailQuery,
   useUpdateUserMutation,
   useChangePasswordMutation,
   useDeleteUserMutation,
   useUpdateOnlineStatusMutation,
   useSearchUsersQuery,
+  useLazySearchUsersQuery,
 } = userApi;

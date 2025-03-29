@@ -19,13 +19,18 @@ import { UpdateMessageDto } from '../dto/message/update-message.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { MessageResponseDto } from '../dto/message/message-response.dto';
 import { plainToClass } from 'class-transformer';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('messages')
 @UseGuards(JwtAuthGuard)
+@ApiTags('messages')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new message' })
+  @ApiResponse({ status: 201, description: 'Message created successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async create(
     @Request() req: { user: { id: string } },
     @Body() createMessageDto: CreateMessageDto,
@@ -38,6 +43,9 @@ export class MessageController {
   }
 
   @Get('room/:roomId')
+  @ApiOperation({ summary: 'Get all messages in a room' })
+  @ApiResponse({ status: 200, description: 'Messages retrieved successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async findAllByRoom(
     @Param('roomId', ParseUUIDPipe) roomId: string,
     @Request() req: { user: { id: string } },
@@ -58,6 +66,9 @@ export class MessageController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a message by ID' })
+  @ApiResponse({ status: 200, description: 'Message retrieved successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: { user: { id: string } },
@@ -67,6 +78,9 @@ export class MessageController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a message by ID' })
+  @ApiResponse({ status: 200, description: 'Message updated successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateMessageDto: UpdateMessageDto,
@@ -82,6 +96,9 @@ export class MessageController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a message by ID' })
+  @ApiResponse({ status: 204, description: 'Message deleted successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async remove(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: { user: { id: string } },

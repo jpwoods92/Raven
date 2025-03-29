@@ -1,14 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { LoginResponse, LoginRequest } from '../types';
+import { LoginResponse, LoginRequest, RegisterResponse, RegisterRequest } from '../types';
 
 import { importMeta } from '@/constants';
 
-// Define your API types based on your backend
-
-// Create the API with RTK Query
-export const api = createApi({
-  reducerPath: 'api',
+export const authApi = createApi({
+  reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
     baseUrl: importMeta.env.REACT_APP_BACKEND_URL || 'http://localhost:3000',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,10 +19,16 @@ export const api = createApi({
     },
   }),
   endpoints: (builder) => ({
-    // Auth endpoints
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
         url: '/auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    register: builder.mutation<RegisterResponse, RegisterRequest>({
+      query: (credentials) => ({
+        url: '/auth/register',
         method: 'POST',
         body: credentials,
       }),
@@ -34,4 +37,4 @@ export const api = createApi({
 });
 
 // Export hooks for usage in components
-export const { useLoginMutation } = api;
+export const { useLoginMutation, useRegisterMutation } = authApi;

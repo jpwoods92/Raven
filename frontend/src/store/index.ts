@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-import { api } from '../services/api';
+import { authApi } from '../services/auth';
 import authReducer from '../slices/authSlice';
 import modalReducer from '../slices/modalSlice';
 import roomReducer from '../slices/roomSlice';
@@ -17,10 +17,10 @@ export const store = configureStore({
     modal: modalReducer,
     [userApi.reducerPath]: userApi.reducer,
     [roomApi.reducerPath]: roomApi.reducer,
-    [api.reducerPath]: api.reducer,
+    [authApi.reducerPath]: authApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware, userApi.middleware, roomApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, roomApi.middleware),
 });
 
 // Enable refetchOnFocus and refetchOnReconnect

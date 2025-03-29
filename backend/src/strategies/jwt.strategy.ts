@@ -5,8 +5,10 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Injectable()
+@ApiTags('JWTStragey')
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private configService: ConfigService,
@@ -28,6 +30,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  @ApiOperation({ summary: 'Validate JWT payload' })
+  @ApiResponse({ status: 200, description: 'Payload validated successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
   async validate(payload: { sub: string }) {
     const { sub: id } = payload;
     const user = await this.userRepository.findOne({ where: { id } });

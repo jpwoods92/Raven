@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActionCable } from 'react-actioncable-provider';
 
-import UserSearch from '../ui/search';
+import UserSearch from '../ui/Search';
 
 export default class NewRoomForm extends React.Component {
   constructor(props) {
