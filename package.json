@@ -8,7 +8,7 @@
   "scripts": {
     "postinstall": "cd backend && npm install",
     "start": "cd backend && npm run start:prod",
-    "make": "docker-compose up -d",
+    "compose": "docker-compose up -d",
     "heroku-postbuild": "cd frontend && npm install && npm run build && mkdir -p ../backend/public && cp -r build/* ../backend/public/"
   }
 }

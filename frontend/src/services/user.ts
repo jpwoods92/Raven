@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { User } from '../types';
 
-import { importMeta } from '@/constants';
+import { REACT_APP_BACKEND_URL } from '@/constants';
 
 interface CreateUserDto {
   username: string;
@@ -25,7 +25,7 @@ interface ChangePasswordDto {
 export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: importMeta.env.REACT_APP_BACKEND_URL || 'http://localhost:3000',
+    baseUrl: REACT_APP_BACKEND_URL || 'http://localhost:3000',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prepareHeaders: (headers, { getState }: { getState: () => any }) => {
       // Get the token from auth state

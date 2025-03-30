@@ -1,6 +1,6 @@
-@import './_reset.scss';
-@import './auth.scss';
-@import './messages.scss';
-@import './modal.scss';
-@import './rooms.scss';
-@import './splash.scss';
+@use '_reset.scss';
+@use 'auth.scss';
+@use 'messages.scss';
+@use 'modal.scss';
+@use 'rooms.scss';
+@use 'splash.scss';

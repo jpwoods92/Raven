@@ -20,7 +20,6 @@
     "redux-thunk": "^3.1.0",
     "socket.io-client": "^4.8.1",
     "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.2",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1"
   },
@@ -32,11 +31,12 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --save --mode=development --watch",
+    "start": "webpack --mode=development --watch",
+    "build": "webpack --mode=production",
     "postinstall": "webpack",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,scss}\""
+    "lint:fix": "eslint \"src/**/**.{ts,tsx}\" --fix",
+    "format": "prettier --write \"src/**/**.{ts,tsx,css,scss}\""
   },
   "keywords": [],
   "author": "Jackson Woods",
@@ -55,6 +55,9 @@
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
     "prettier": "^3.5.3",
+    "sass": "^1.86.0",
+    "sass-loader": "^16.0.5",
+    "ts-loader": "^9.5.2",
     "typescript": "^5.8.2"
   }
 }

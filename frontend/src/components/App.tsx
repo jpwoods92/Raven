@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import loggedInIcon from '../assets/images/logged-in-icon.png';
+import loggedInIcon from '../assets/logged-in-icon.png';
 import { logout } from '../slices/authSlice';
 import { useAppSelector } from '../store';
 
