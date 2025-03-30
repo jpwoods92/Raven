@@ -5,7 +5,7 @@ import loggedInIcon from '../assets/images/logged-in-icon.png';
 import { logout } from '../slices/authSlice';
 import { useAppSelector } from '../store';
 
-import MessagesAreaContainer from './messages/messages_area_container';
+import MessagesArea from './messages/MessagesArea';
 import { RoomsList } from './rooms/RoomsList';
 
 const MainApp = () => {
@@ -35,7 +35,7 @@ const MainApp = () => {
         </header>
         <RoomsList />
       </div>
-      <MessagesAreaContainer />
+      <MessagesArea />
     </div>
   );
 };

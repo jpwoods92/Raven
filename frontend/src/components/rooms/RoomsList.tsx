@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { RoomsListItem } from './RoomsListItem';
 
-import addChannel from '@/assets/add-channel-icon.png';
+import addRoom from '@/assets/add-room-icon.png';
 import { openModal } from '@/slices/modalSlice';
 import { useAppSelector } from '@/store';
 
@@ -36,7 +36,7 @@ export const RoomsList = () => {
       <div className="list-header">
         <h2 className="rooms">Rooms</h2>
         <button className="room-form-button" onClick={() => handleOpenModal('newRoom')}>
-          <img src={addChannel} alt="add-channel-icon" />
+          <img src={addRoom} alt="add-room-icon" />
         </button>
       </div>
       <ul className="roomsList">
@@ -46,7 +46,7 @@ export const RoomsList = () => {
       </ul>
       <h2 className="rooms">Direct Messages</h2>
       <button className="room-form-button" onClick={() => handleOpenModal('newDMForm')}>
-        <img src={addChannel} alt="add-channel-icon" />
+        <img src={addRoom} alt="add-room-icon" />
       </button>
       <ul className="roomsList">
         {privateRooms.map((roomId) => (

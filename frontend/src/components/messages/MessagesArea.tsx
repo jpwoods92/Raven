@@ -21,7 +21,7 @@ const MessagesArea: React.FC = () => {
   }, [room.name]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const sortedMessages = (messagesToSort: Message[]) => {

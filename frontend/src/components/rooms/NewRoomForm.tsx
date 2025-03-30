@@ -58,7 +58,7 @@ const NewRoomForm: React.FC = () => {
 
   return (
     <div className="newroom-form-div">
-      <h1 className="newroom-title">Create a channel</h1>
+      <h1 className="newroom-title">Create a room</h1>
       <p className="newroom-body">
         Rooms are where your members communicate. They&apos;re best when organized around a topic —
         #leads, for example.
@@ -69,7 +69,7 @@ const NewRoomForm: React.FC = () => {
             <input type="checkbox" readOnly checked={isPrivate} />
             <span className="slider round"></span>
           </div>
-          <div className="text-label">Anyone in your workspace can view and join this channel.</div>
+          <div className="text-label">Anyone in your workspace can view and join this room.</div>
         </div>
         <span className="title-label">Name</span>
         {validation.errorMessage && <p className="error-text">{validation.errorMessage}</p>}

@@ -34,9 +34,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --save --mode=development --watch",
     "postinstall": "webpack",
-    "lint": "eslint \"*/*.{ts,tsx}\"",
-    "lint:fix": "eslint \"*/*.{ts,tsx}\" --fix",
-    "format": "prettier --write \"*/*.{ts,tsx,css,scss}\""
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,scss}\""
   },
   "keywords": [],
   "author": "Jackson Woods",
