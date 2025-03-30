@@ -25,7 +25,11 @@ export default [
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
-      globals: cleanGlobals({ ...globals.browser }),
+      globals: cleanGlobals({
+        ...globals.browser,
+        // Add process global to prevent errors
+        process: 'readonly',
+      }),
     },
     plugins: {
       import: importPlugin,

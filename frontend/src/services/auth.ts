@@ -2,12 +2,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { LoginResponse, LoginRequest, RegisterResponse, RegisterRequest } from '../types';
 
-import { REACT_APP_BACKEND_URL } from '@/constants';
-
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: REACT_APP_BACKEND_URL || 'http://localhost:3000',
+    baseUrl: process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prepareHeaders: (headers, { getState }: { getState: () => any }) => {
       // Get the token from auth state

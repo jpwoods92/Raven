@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
+const DotenvWebpackPlugin = require('dotenv-webpack');
 
 // Determine the mode from environment variable, default to 'development'
 const isProduction = process.env.NODE_ENV === 'production';
@@ -70,6 +72,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new DotenvWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
       filename: 'index.html',
@@ -88,6 +91,12 @@ module.exports = {
             minifyURLs: true,
           }
         : false,
+    }),
+    new CircularDependencyPlugin({
+      exclude: /node_modules/,
+      failOnError: true,
+      allowAsyncCycles: false,
+      cwd: process.cwd(),
     }),
   ],
   optimization: {
@@ -126,5 +135,6 @@ module.exports = {
     port: process.env.FRONTEND_PORT || 8080,
     hot: true,
     historyApiFallback: true,
+    host: '0.0.0.0',
   },
 };

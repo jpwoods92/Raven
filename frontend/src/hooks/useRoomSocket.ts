@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { io, Socket } from 'socket.io-client';
 
-import { REACT_APP_BACKEND_URL } from '@/constants';
 import { RootState } from '@/store';
 import { Message } from '@/types';
 
@@ -27,7 +26,7 @@ export const useRoomSocket = ({ roomId }: RoomSocketProps = {}) => {
     // Don't connect if not authenticated
     if (!token || !user) return;
 
-    const backendUrl = REACT_APP_BACKEND_URL || 'http://localhost:3000';
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000';
     const newSocket = io(backendUrl, {
       auth: {
         token,

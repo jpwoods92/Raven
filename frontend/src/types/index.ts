@@ -62,11 +62,3 @@ export interface MessageRequest {
   content: string;
   roomId: string;
 }
-
-export interface ImportMetaEnv {
-  REACT_APP_BACKEND_URL?: string;
-}
-
-export interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}

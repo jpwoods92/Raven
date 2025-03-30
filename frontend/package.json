@@ -8,6 +8,7 @@
     "@reduxjs/toolkit": "^2.6.1",
     "babel-loader": "^10.0.0",
     "css-loader": "^7.1.2",
+    "dotenv": "^16.4.7",
     "file-loader": "^6.2.0",
     "lodash.merge": "^4.6.2",
     "react": "^18.2.0",
@@ -31,9 +32,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --mode=development --watch",
+    "start": "webpack serve --mode=development",
     "build": "webpack --mode=production",
-    "postinstall": "webpack",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint:fix": "eslint \"src/**/**.{ts,tsx}\" --fix",
     "format": "prettier --write \"src/**/**.{ts,tsx,css,scss}\""
@@ -46,6 +46,8 @@
     "@types/react-dom": "^19.0.4",
     "@typescript-eslint/eslint-plugin": "^8.27.0",
     "@typescript-eslint/parser": "^8.27.0",
+    "circular-dependency-plugin": "^5.2.2",
+    "dotenv-webpack": "^8.1.0",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-import": "^2.31.0",
@@ -58,6 +60,7 @@
     "sass": "^1.86.0",
     "sass-loader": "^16.0.5",
     "ts-loader": "^9.5.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "webpack-dev-server": "^5.2.1"
   }
 }

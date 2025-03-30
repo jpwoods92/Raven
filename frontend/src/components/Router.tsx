@@ -1,19 +1,26 @@
-import React, { Fragment } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import App from './App';
 import LoginForm from './authComponents/LoginForm';
 import SignupForm from './authComponents/SignupForm';
 import Splash from './splash/Splash';
 
-import { AuthRoute, ProtectedRoute } from '@/util/routeUtil';
+import { useAppSelector } from '@/store';
 
-const Slackr = () => (
-  <Fragment>
-    <AuthRoute path="/login" component={LoginForm} />
-    <AuthRoute path="/signup" component={SignupForm} />
-    <ProtectedRoute path="/rooms/:id" component={App} />
-    <AuthRoute path="/" component={Splash} />
-  </Fragment>
-);
+const Router = () => {
+  const loggedIn = useAppSelector((state) => state.auth.isAuthenticated);
 
-export default Slackr;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={loggedIn ? <Navigate to="/" /> : <LoginForm />} />
+        <Route path="/signup" element={loggedIn ? <Navigate to="/" /> : <SignupForm />} />
+        <Route path="/rooms/:id" element={!loggedIn ? <Navigate to="/" /> : <App />} />
+        <Route path="/" element={<Splash />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+export default Router;

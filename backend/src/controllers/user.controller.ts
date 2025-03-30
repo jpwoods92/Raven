@@ -9,12 +9,13 @@ import {
   UseGuards,
   ClassSerializerInterceptor,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/user/create-user.dto';
 import { UpdateUserDto } from '../dto/user/update-user.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -35,8 +36,35 @@ export class UserController {
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  findAll() {
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Search term for users',
+  })
+  @ApiQuery({
+    name: 'roomId',
+    required: false,
+    description: 'Room ID to filter users by',
+  })
+  findAll(@Query('search') search?: string, @Query('roomId') roomId?: string) {
+    if (roomId) {
+      return this.userService.findUsersByRoomId(roomId);
+    }
+
+    if (search) {
+      return this.userService.searchUsers(search);
+    }
+
     return this.userService.findAll();
+  }
+
+  @Get('room/:roomId')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get all users in a specific room' })
+  @ApiResponse({ status: 200, description: 'Users retrieved successfully' })
+  @ApiResponse({ status: 404, description: 'No users found for the room' })
+  getUsersByRoomId(@Param('roomId') roomId: string) {
+    return this.userService.findUsersByRoomId(roomId);
   }
 
   @Get(':id')
