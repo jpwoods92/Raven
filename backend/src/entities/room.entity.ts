@@ -32,9 +32,6 @@ export class Room {
   @OneToMany(() => RoomMembership, (membership) => membership.room)
   roomMemberships: RoomMembership[];
 
-  // This would be the equivalent of "has_many :members, through: :room_memberships"
-  // In TypeORM we typically handle this relationship in the service layer
-
   @OneToMany(() => Message, (message) => message.room, {
     cascade: true,
     onDelete: 'CASCADE',
