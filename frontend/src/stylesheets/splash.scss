@@ -119,7 +119,17 @@
     line-height: 32px;
 }
 
-
+.input-error {
+    border: 1px solid red;
+  }
+  
+  .validation-error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    padding: 0px 0px 10px 15px;
+  }
+  
 
 #sign-in-text {
     margin-top: 30px;
