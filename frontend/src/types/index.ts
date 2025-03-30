@@ -4,6 +4,9 @@ export interface User {
   email?: string;
   createdAt: string;
   updatedAt: string;
+  avatar?: string;
+  isOnline?: boolean;
+  displayname?: string;
 }
 
 export interface Room {

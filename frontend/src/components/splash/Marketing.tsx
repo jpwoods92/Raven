@@ -17,10 +17,10 @@ const Marketing = () => {
       <div className="topics">
         <div>
           <section>
-            <img id="channels-icon" alt="slackr-channels-img" src={iconChat} />
-            <h3 id="channels-title">Channels</h3>
+            <img id="rooms-icon" alt="slackr-rooms-img" src={iconChat} />
+            <h3 id="rooms-title">Rooms</h3>
           </section>
-          <p id="channels-body">
+          <p id="rooms-body">
             Mixtape cronut farm-to-table paleo tbh leggings. Intelligentsia single-origin coffee
             migas, wolf squid blog direct trade VHS farm-to-table disrupt gentrify microdosing.
           </p>

@@ -138,4 +138,19 @@ export class UserService {
       })
       .getMany();
   }
+
+  async findUsersByRoomId(roomId: string): Promise<User[]> {
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.roomMemberships', 'membership')
+      .innerJoin('membership.room', 'room')
+      .where('room.id = :roomId', { roomId })
+      .getMany();
+
+    if (users.length === 0) {
+      throw new NotFoundException(`No users found for room with ID ${roomId}`);
+    }
+
+    return users;
+  }
 }

@@ -34,7 +34,7 @@ export const RoomsList = () => {
   return (
     <div className="rooms">
       <div className="list-header">
-        <h2 className="channels">Channels</h2>
+        <h2 className="rooms">Rooms</h2>
         <button className="room-form-button" onClick={() => handleOpenModal('newRoom')}>
           <img src={addChannel} alt="add-channel-icon" />
         </button>
@@ -44,7 +44,7 @@ export const RoomsList = () => {
           <RoomsListItem key={roomId} roomId={roomId} />
         ))}
       </ul>
-      <h2 className="channels">Direct Messages</h2>
+      <h2 className="rooms">Direct Messages</h2>
       <button className="room-form-button" onClick={() => handleOpenModal('newDMForm')}>
         <img src={addChannel} alt="add-channel-icon" />
       </button>

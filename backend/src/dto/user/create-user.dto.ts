@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -13,6 +14,7 @@ export class CreateUserDto {
     message:
       'Username can only contain alphanumeric characters, underscores, and hyphens',
   })
+  @ApiProperty({ example: 'john_doe', description: 'Username' })
   username: string;
 
   @IsEmail()
@@ -24,9 +26,11 @@ export class CreateUserDto {
   @MinLength(8, {
     message: 'Password must be at least 8 characters long',
   })
+  @ApiProperty({ example: 'Password123!', description: 'Password' })
   password: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({ example: 'John Doe', description: 'Display name' })
   displayName: string;
 }

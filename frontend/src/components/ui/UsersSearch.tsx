@@ -6,7 +6,7 @@ import { User } from '@/types';
 
 interface UsersSearchProps {
   selectedUsers: User[];
-  handleUsernameClick: (username: string, id: string) => void;
+  handleUsernameClick: (user: User) => void;
   removeUser: (e: React.MouseEvent) => void;
   isPrivate?: boolean;
 }
@@ -35,7 +35,13 @@ const UsersSearch: React.FC<UsersSearchProps> = ({
     const value = e.target.value;
 
     searchUsers(value).then((response) => {
-      setUsers(response.data?.filter((user: User) => user.id !== currentUser?.id));
+      setUsers(
+        response.data?.filter((user: User) => {
+          const notCurrentUser = user.id !== currentUser?.id;
+          const notSelected = !selectedUsers.some((selectedUser) => selectedUser.id === user.id);
+          return notCurrentUser && notSelected;
+        })
+      );
     });
     setInput(value);
   };
@@ -46,7 +52,7 @@ const UsersSearch: React.FC<UsersSearchProps> = ({
   const results = (
     <ul className={`search-list ${dmClass}`}>
       {limitedList?.map((user) => (
-        <li onClick={() => handleUsernameClick(user.username, user.id)} key={user.id}>
+        <li onClick={() => handleUsernameClick(user)} key={user.id}>
           {user.username}
         </li>
       ))}

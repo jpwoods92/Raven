@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { closeModal } from '../../slices/modalSlice';
 import { RootState } from '../../store';
-import NewDMForm from '../rooms/new_dm_form';
-import NewRoomForm from '../rooms/new_room_form';
+import NewRoomForm from '../rooms/NewRoomForm';
 
 export const Modal = () => {
   const dispatch = useDispatch();
@@ -17,9 +16,6 @@ export const Modal = () => {
   switch (modal) {
     case 'newRoom':
       component = <NewRoomForm />;
-      break;
-    case 'newDMForm':
-      component = <NewDMForm />;
       break;
     default:
       return null;

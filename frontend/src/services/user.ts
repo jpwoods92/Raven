@@ -121,6 +121,18 @@ export const userApi = createApi({
       query: (query) => `/users/search?query=${encodeURIComponent(query)}`,
       providesTags: [{ type: 'User', id: 'SEARCH' }],
     }),
+
+    // Get users by room ID
+    getUsersByRoomId: builder.query<User[], string>({
+      query: (roomId) => `/users/room/${roomId}`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'User' as const, id })),
+              { type: 'User', id: 'ROOM_USERS' },
+            ]
+          : [{ type: 'User', id: 'ROOM_USERS' }],
+    }),
   }),
 });
 
@@ -138,4 +150,6 @@ export const {
   useUpdateOnlineStatusMutation,
   useSearchUsersQuery,
   useLazySearchUsersQuery,
+  useGetUsersByRoomIdQuery,
+  useLazyGetUsersByRoomIdQuery,
 } = userApi;
