@@ -5,6 +5,7 @@ import loggedInIcon from '../assets/logged-in-icon.png';
 import { logout } from '../slices/authSlice';
 import { useAppSelector } from '../store';
 
+import { Modal } from './common/Modal';
 import MessagesArea from './messages/MessagesArea';
 import { RoomsList } from './rooms/RoomsList';
 
@@ -20,6 +21,7 @@ const MainApp = () => {
 
   return (
     <div className="main-app">
+      <Modal />
       <div className="side-nav">
         <header className="side-nav-header">
           {isAuthenticated && (

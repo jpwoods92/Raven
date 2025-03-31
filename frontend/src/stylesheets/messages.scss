@@ -6,14 +6,13 @@
 .messagesArea {
     position: relative;
     background-color: white;
-    left: 220px;
     height: 100%;
     overflow-x: hidden;
     overflow-y: scroll;
-    right: -50px;
     display: flex;
-    max-height: 100%;
     flex-direction: column;
+    width: calc(100% - 250px);
+  flex: 1;
 }
 
 .messages-container {

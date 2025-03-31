@@ -60,7 +60,7 @@ const LoginForm: React.FC = () => {
           <ul className="login-form-list">
             <li>
               <label className="email-input">
-                Email
+                Username
                 <input
                   id="username-input"
                   type="text"

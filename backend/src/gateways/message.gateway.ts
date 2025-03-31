@@ -11,6 +11,7 @@ import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { MessageService } from '../services/message.service';
 import { CreateMessageDto } from '../dto/message/create-message.dto';
+import { UpdateMessageDto } from '../dto/message/update-message.dto';
 import { JwtService } from '@nestjs/jwt';
 import { WsJwtGuard } from '../guards/ws-jwt.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -45,11 +46,11 @@ export class MessageGateway
       }
 
       // Validate token
-      const payload: { id: string } = await this.jwtService.verify(token);
+      const payload: { sub: string } = await this.jwtService.verify(token);
       client.data = { user: payload };
 
       // Join user to their user-specific room for private messages
-      await client.join(`user:${payload.id}`);
+      await client.join(`user:${payload.sub}`);
     } catch (err: unknown) {
       if (err instanceof Error) {
         console.error('Connection error:', err.message);
@@ -73,9 +74,15 @@ export class MessageGateway
     // Add user to room channel
     await client.join(`room:${roomId}`);
 
-    const userId = (client.data as { user: { id: string } }).user.id;
+    const userId = (client.data as { user: { sub: string } }).user.sub;
 
-    // Could notify other users that this user joined the room
+    // Fetch existing messages for this room
+    const messages = await this.messageService.findAllByRoom(roomId, userId);
+
+    // Emit message history to the client who just joined
+    client.emit('messageHistory', messages);
+
+    // Notify other users that this user joined the room
     this.server.to(`room:${roomId}`).emit('userJoined', {
       userId,
       roomId,
@@ -92,7 +99,7 @@ export class MessageGateway
     @MessageBody() roomId: string,
   ) {
     await client.leave(`room:${roomId}`);
-    const userId = (client.data as { user: { id: string } }).user.id;
+    const userId = (client.data as { user: { sub: string } }).user.sub;
 
     // Could notify other users that this user left the room
     this.server.to(`room:${roomId}`).emit('userLeft', {
@@ -111,18 +118,91 @@ export class MessageGateway
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
     try {
-      const userId = (client.data as { user: { id: string } }).user.id;
+      const userId = (client.data as { user: { sub: string } }).user.sub;
       const message = await this.messageService.create(
         userId,
         createMessageDto,
       );
 
       // Broadcast the message to all clients in the room
+      // The message object already includes the user relation from the service
       this.server
         .to(`room:${createMessageDto.roomId}`)
         .emit('newMessage', message);
 
       return { success: true, message };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, error: error.message };
+      }
+      return { success: false, error: 'An unknown error occurred' };
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('updateMessage')
+  @ApiOperation({ summary: 'Update a message' })
+  @ApiResponse({ status: 200, description: 'Message updated successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 403, description: 'Forbidden - not message owner' })
+  async handleUpdateMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { id: string; content: string },
+  ) {
+    try {
+      const userId = (client.data as { user: { sub: string } }).user.sub;
+      const updateMessageDto: UpdateMessageDto = { content: payload.content };
+
+      // Update the message
+      const updatedMessage = await this.messageService.update(
+        payload.id,
+        userId,
+        updateMessageDto,
+      );
+
+      // Broadcast the updated message to all clients in the room
+      this.server
+        .to(`room:${updatedMessage.roomId}`)
+        .emit('messageUpdated', updatedMessage);
+
+      return { success: true, message: updatedMessage };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, error: error.message };
+      }
+      return { success: false, error: 'An unknown error occurred' };
+    }
+  }
+
+  @UseGuards(WsJwtGuard)
+  @SubscribeMessage('deleteMessage')
+  @ApiOperation({ summary: 'Delete a message' })
+  @ApiResponse({ status: 200, description: 'Message deleted successfully' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - not message owner or room owner',
+  })
+  async handleDeleteMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() messageId: string,
+  ) {
+    try {
+      const userId = (client.data as { user: { sub: string } }).user.sub;
+
+      // Get the message first to know which room to notify
+      const message = await this.messageService.findOne(messageId, userId);
+      const roomId = message.roomId;
+
+      // Delete the message
+      await this.messageService.remove(messageId, userId);
+
+      // Notify all clients in the room about the deletion
+      this.server
+        .to(`room:${roomId}`)
+        .emit('messageDeleted', { id: messageId, roomId });
+
+      return { success: true };
     } catch (error) {
       if (error instanceof Error) {
         return { success: false, error: error.message };

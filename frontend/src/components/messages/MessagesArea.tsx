@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 
 import MessageListItem from './MessageListItem';
 import MessageNav from './MessageNav';
@@ -9,16 +10,17 @@ import { useAppSelector } from '@/store';
 import { Message } from '@/types';
 
 const MessagesArea: React.FC = () => {
-  const room = useAppSelector((state) => state.rooms.rooms[state.rooms.currentRoomId as string]);
+  const { id = '' } = useParams();
+  const room = useAppSelector((state) => state.rooms.rooms[id as string]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages } = useRoomSocket({ roomId: room.id });
+  const { messages } = useRoomSocket({ roomId: room?.id });
 
   useEffect(() => {
-    if (room.name !== undefined) {
+    if (room?.title !== undefined) {
       scrollToBottom();
     }
-  }, [room.name]);
+  }, [room?.title]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,13 +42,17 @@ const MessagesArea: React.FC = () => {
   return (
     <div className="messagesArea">
       <MessageNav />
-      <div className="messages-container">
-        <ul className="message-list">
-          {messageItems}
-          <div ref={messagesEndRef}></div>
-        </ul>
-        <NewMessageForm />
-      </div>
+      {room ? (
+        <div className="messages-container">
+          <ul className="message-list">
+            {messageItems}
+            <div ref={messagesEndRef}></div>
+          </ul>
+          <NewMessageForm />
+        </div>
+      ) : (
+        <div className="messages-container">Select a room to start messaging</div>
+      )}
     </div>
   );
 };

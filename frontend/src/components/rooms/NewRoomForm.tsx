@@ -39,7 +39,7 @@ const NewRoomForm: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (validation.isValid) {
-      createRoom({ name: title, isPrivate });
+      createRoom({ title, isPrivate });
       dispatch(closeModal());
     }
   };

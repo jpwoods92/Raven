@@ -14,8 +14,9 @@ const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={loggedIn ? <Navigate to="/" /> : <LoginForm />} />
-        <Route path="/signup" element={loggedIn ? <Navigate to="/" /> : <SignupForm />} />
+        <Route path="/login" element={loggedIn ? <Navigate to="/rooms" /> : <LoginForm />} />
+        <Route path="/signup" element={loggedIn ? <Navigate to="/rooms" /> : <SignupForm />} />
+        <Route path="/rooms" element={!loggedIn ? <Navigate to="/" /> : <App />} />
         <Route path="/rooms/:id" element={!loggedIn ? <Navigate to="/" /> : <App />} />
         <Route path="/" element={<Splash />} />
       </Routes>

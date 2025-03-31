@@ -37,15 +37,17 @@ export class MessageService {
       throw new NotFoundException(`Room with ID ${roomId} not found`);
     }
 
-    // Check if the user is a member of the room
-    const membership = await this.roomMembershipRepository.findOne({
-      where: { roomId, userId },
-    });
+    // Check if the user is a member of the room only if the room is private
+    if (room.isPrivate) {
+      const membership = await this.roomMembershipRepository.findOne({
+        where: { roomId, userId },
+      });
 
-    if (!membership && room.ownerId !== userId) {
-      throw new ForbiddenException(
-        'You must be a member of the room to send messages',
-      );
+      if (!membership && room.ownerId !== userId) {
+        throw new ForbiddenException(
+          'You must be a member of the private room to send messages',
+        );
+      }
     }
 
     // Create and save the message
@@ -55,7 +57,19 @@ export class MessageService {
       userId,
     });
 
-    return this.messageRepository.save(message);
+    await this.messageRepository.save(message);
+
+    // Fetch the complete message with user relation
+    const savedMessage = await this.messageRepository.findOne({
+      where: { id: message.id },
+      relations: ['user'],
+    });
+
+    if (!savedMessage) {
+      throw new NotFoundException(`Message with ID ${message.id} not found`);
+    }
+
+    return savedMessage;
   }
 
   async findAllByRoom(

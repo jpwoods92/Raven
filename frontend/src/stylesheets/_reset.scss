@@ -27,8 +27,16 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
-body {
-	line-height: 1;
+html, body, #root {
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+#root {
+	display: flex;
+	flex-direction: column;
 }
 ol, ul {
 	list-style: none;

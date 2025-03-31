@@ -18,7 +18,7 @@ export const roomApi = createApi({
   }),
   tagTypes: ['Room', 'RoomMembership'],
   endpoints: (builder) => ({
-    createRoom: builder.mutation<Room, { name: string; isPrivate: boolean }>({
+    createRoom: builder.mutation<Room, { title: string; isPrivate: boolean }>({
       query: (createRoomDto) => ({
         url: '/rooms',
         method: 'POST',

@@ -9,6 +9,7 @@
     "postinstall": "cd backend && npm install",
     "start": "cd backend && npm run start:prod",
     "compose": "docker-compose up -d",
+    "compose:dev": "docker-compose -f docker-compose.dev.yml up",
     "heroku-postbuild": "cd frontend && npm install && npm run build && mkdir -p ../backend/public && cp -r build/* ../backend/public/"
   }
 }

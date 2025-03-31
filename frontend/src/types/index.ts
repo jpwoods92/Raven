@@ -11,7 +11,7 @@ export interface User {
 
 export interface Room {
   id: string;
-  name: string;
+  title: string;
   createdAt: string;
   updatedAt: string;
   ownerId: string;
@@ -43,7 +43,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  accessToken: string;
+  token: string;
   user: User;
 }
 
@@ -54,7 +54,7 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  accessToken: string;
+  token: string;
   user: User;
 }
 

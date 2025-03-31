@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { useRoomSocket } from '../../hooks/useRoomSocket';
 
 import { useAppSelector } from '@/store';
 
 const NewMessageForm: React.FC = () => {
-  const room = useAppSelector((state) => state.rooms.rooms[state.rooms.currentRoomId as string]);
+  const { id = '' } = useParams();
+  const room = useAppSelector((state) => state.rooms.rooms[id as string]);
   const [body, setBody] = useState('');
 
   const { sendMessage } = useRoomSocket({ roomId: room.id });
@@ -41,7 +43,7 @@ const NewMessageForm: React.FC = () => {
           value={body}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder={`Message #${room?.name}`}
+          placeholder={`Message #${room?.title}`}
           className="message-input"
           rows={1}
           autoComplete="off"

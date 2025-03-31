@@ -45,8 +45,20 @@ export const useRoomSocket = ({ roomId }: RoomSocketProps = {}) => {
       throw new Error(`Connection error: ${err.message}`);
     });
 
-    newSocket.on('message', (message: Message) => {
+    newSocket.on('messageHistory', (messages: Message[]) => {
+      setMessages(messages);
+    });
+
+    newSocket.on('newMessage', (message: Message) => {
       setMessages((prev) => [...prev, message]);
+    });
+
+    newSocket.on('messageUpdated', (message: Message) => {
+      setMessages((prev) => prev.map((msg) => (msg.id === message.id ? message : msg)));
+    });
+
+    newSocket.on('messageDeleted', (messageId: string) => {
+      setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
     });
 
     return () => {

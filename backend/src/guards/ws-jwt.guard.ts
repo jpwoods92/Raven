@@ -1,6 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { WsException } from '@nestjs/websockets';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class WsJwtGuard implements CanActivate {
@@ -10,7 +11,7 @@ export class WsJwtGuard implements CanActivate {
     try {
       interface SocketClient {
         data?: {
-          user?: unknown;
+          user?: User;
         };
         handshake?: {
           auth?: {
@@ -35,7 +36,7 @@ export class WsJwtGuard implements CanActivate {
       }
 
       // Verify JWT token
-      const payload = await this.jwtService.verifyAsync(token);
+      const payload = await this.jwtService.verifyAsync<User>(token);
 
       // Attach decoded user to socket data for future use
       client.data = {
