@@ -5,7 +5,7 @@ services:
       resources:
         limits:
           memory: 16g
-    container_name: slackr2-postgres
+    container_name: raven-postgres
     ports:
       - "${DATABASE_PORT}:5432"
     environment:
@@ -16,7 +16,7 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - slackr2-network
+      - raven-network
     env_file:
       - ./.env
 
@@ -24,7 +24,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: slackr2-backend
+    container_name: raven-backend
     ports:
       - "${BACKEND_PORT}:3000"
     depends_on:
@@ -37,7 +37,7 @@ services:
       POSTGRES_DB: ${DATABASE_NAME}
       NODE_ENV: ${NODE_ENV}
     networks:
-      - slackr2-network
+      - raven-network
     env_file:
       - ./backend/.env
 
@@ -45,18 +45,18 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: slackr2-frontend
+    container_name: raven-frontend
     ports:
       - "${FRONTEND_PORT}:80"
     depends_on:
       - backend
     networks:
-      - slackr2-network
+      - raven-network
     env_file:
       - ./frontend/.env
 
 networks:
-  slackr2-network:
+  raven-network:
     driver: bridge
 
 volumes:

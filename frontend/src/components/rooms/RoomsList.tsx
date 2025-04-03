@@ -1,9 +1,10 @@
+import { AddCircleOutlined } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { RoomsListItem } from './RoomsListItem';
 
-import addRoom from '@/assets/add-room-icon.png';
 import { useGetRoomsQuery } from '@/services/room';
 import { openModal } from '@/slices/modalSlice';
 import { useAppSelector } from '@/store';
@@ -36,9 +37,9 @@ export const RoomsList = () => {
     <div className="rooms">
       <div className="list-header">
         <h2 className="rooms">Rooms</h2>
-        <button className="room-form-button" onClick={() => handleOpenModal('newRoom')}>
-          <img src={addRoom} alt="add-room-icon" />
-        </button>
+        <IconButton onClick={() => handleOpenModal('newRoom')}>
+          <AddCircleOutlined />
+        </IconButton>
       </div>
       <ul className="roomsList">
         {regularRooms.map((roomId) => (

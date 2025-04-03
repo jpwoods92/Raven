@@ -9,8 +9,8 @@ async function bootstrap() {
   app.useWebSocketAdapter(new IoAdapter(app));
 
   const config = new DocumentBuilder()
-    .setTitle('Slackr2 API')
-    .setDescription('The Slackr2 API documentation')
+    .setTitle('Raven API')
+    .setDescription('The Raven API documentation')
     .setVersion('1.0')
     .addBearerAuth()
     .build();

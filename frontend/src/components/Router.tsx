@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import App from './App';
 import LoginForm from './authComponents/LoginForm';
 import SignupForm from './authComponents/SignupForm';
-import Splash from './splash/Splash';
 
 import { useAppSelector } from '@/store';
 
@@ -18,7 +17,7 @@ const Router = () => {
         <Route path="/signup" element={loggedIn ? <Navigate to="/rooms" /> : <SignupForm />} />
         <Route path="/rooms" element={!loggedIn ? <Navigate to="/" /> : <App />} />
         <Route path="/rooms/:id" element={!loggedIn ? <Navigate to="/" /> : <App />} />
-        <Route path="/" element={<Splash />} />
+        <Route path="/" element={<LoginForm />} />
       </Routes>
     </BrowserRouter>
   );

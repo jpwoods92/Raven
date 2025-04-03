@@ -1,6 +1,12 @@
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { Box, Typography, Button, Container, Paper, Alert, Stack, Link } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import React, { useState, useEffect } from 'react';
+import { Link as ReactLink } from 'react-router-dom';
 
-import NavLinks from '../splash/NavComponent';
+import { InputField } from '../common/InputField';
+import AppBar from '../nav/AppBar';
+
+import { signupFormStyles } from './SignupForm.styles';
 
 import { useRegisterMutation } from '@/services/auth';
 
@@ -17,6 +23,9 @@ interface ValidationErrors {
 }
 
 const SignupForm: React.FC = () => {
+  const theme = useTheme();
+  const styles = signupFormStyles(theme);
+
   const [formData, setFormData] = useState<UserFormData>({
     username: '',
     email: '',
@@ -28,6 +37,8 @@ const SignupForm: React.FC = () => {
     email: '',
     password: '',
   });
+
+  const [register, { error }] = useRegisterMutation();
 
   useEffect(() => {
     setFormData({
@@ -60,7 +71,7 @@ const SignupForm: React.FC = () => {
     return '';
   };
 
-  const update = (field: keyof UserFormData) => (e: ChangeEvent<HTMLInputElement>) => {
+  const update = (field: keyof UserFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormData({
       ...formData,
@@ -72,8 +83,6 @@ const SignupForm: React.FC = () => {
       [field]: '',
     });
   };
-
-  const [signUp, { error }] = useRegisterMutation();
 
   const validateForm = (): boolean => {
     const usernameError = validateUsername(formData.username);
@@ -89,110 +98,123 @@ const SignupForm: React.FC = () => {
     return !usernameError && !emailError && !passwordError;
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    await signUp(formData);
+    await register(formData);
   };
 
-  const errorBox = error ? (
-    <div className="errors-box-signup">
-      <ul id="error-messages">
-        <li>
-          {('data' in error && (error.data as { message: string }).message) ||
-            (error as Error).message}
-        </li>
-      </ul>
-    </div>
-  ) : null;
+  // Extract error messages from RTK Query error
+  const errorMessages = error
+    ? [
+        'data' in error && (error.data as { message: string }).message
+          ? [(error.data as { message: string }).message]
+          : [(error as Error).message],
+      ]
+    : [];
 
   return (
-    <div className="signup-form-div">
-      <NavLinks />
-      <form className="signup-form" onSubmit={handleSubmit}>
-        <div className="signup-form-container">
-          <h3 className="form-title-signup">Welcome to Slackr!</h3>
-          <ul className="signup-form-list">
-            <li>
-              <label className="email-input">
-                Email
-                <input
-                  id="email-input"
-                  type="text"
-                  placeholder="your-name@email.com"
-                  value={formData.email}
-                  onChange={update('email')}
-                  onBlur={() => {
-                    setValidationErrors({
-                      ...validationErrors,
-                      email: validateEmail(formData.email),
-                    });
-                  }}
-                  className={validationErrors.email ? 'input-error' : ''}
-                />
-                {validationErrors.email && (
-                  <div className="validation-error">{validationErrors.email}</div>
-                )}
-              </label>
-            </li>
-            <li>
-              <label className="username-input">
-                Username
-                <input
-                  type="text"
-                  id="username-input"
-                  placeholder="your name"
-                  value={formData.username}
-                  onChange={update('username')}
-                  onBlur={() => {
-                    setValidationErrors({
-                      ...validationErrors,
-                      username: validateUsername(formData.username),
-                    });
-                  }}
-                  className={validationErrors.username ? 'input-error' : ''}
-                />
-                {validationErrors.username && (
-                  <div className="validation-error">{validationErrors.username}</div>
-                )}
-              </label>
-            </li>
-            <li>
-              <label className="password-input">
-                Password
-                <input
-                  type="password"
-                  id="password-input"
-                  placeholder="6 characters minimum"
-                  value={formData.password}
-                  onChange={update('password')}
-                  onBlur={() => {
-                    setValidationErrors({
-                      ...validationErrors,
-                      password: validatePassword(formData.password),
-                    });
-                  }}
-                  className={validationErrors.password ? 'input-error' : ''}
-                />
-                {validationErrors.password && (
-                  <div className="validation-error">{validationErrors.password}</div>
-                )}
-              </label>
-            </li>
-            <li id="submit-li">
-              <button id="submit-input" type="submit">
+    <>
+      <AppBar />
+      <Container sx={styles.container}>
+        <Paper elevation={3} sx={styles.paper}>
+          <Box component="form" onSubmit={handleSubmit} sx={styles.form}>
+            <Typography variant="h4" component="h3" gutterBottom sx={styles.title}>
+              Welcome to Raven!
+            </Typography>
+            <Typography variant="body1" sx={styles.description}>
+              Join our community and start connecting with friends and colleagues in real-time.
+            </Typography>
+
+            <Stack spacing={3}>
+              <InputField
+                id="email-input"
+                label="Email"
+                variant="outlined"
+                fullWidth
+                value={formData.email}
+                onChange={update('email')}
+                error={!!validationErrors.email}
+                helperText={validationErrors.email}
+                onBlur={() => {
+                  setValidationErrors({
+                    ...validationErrors,
+                    email: validateEmail(formData.email),
+                  });
+                }}
+              />
+
+              <InputField
+                id="username-input"
+                label="Username"
+                variant="outlined"
+                fullWidth
+                value={formData.username}
+                onChange={update('username')}
+                error={!!validationErrors.username}
+                helperText={validationErrors.username}
+                onBlur={() => {
+                  setValidationErrors({
+                    ...validationErrors,
+                    username: validateUsername(formData.username),
+                  });
+                }}
+              />
+
+              <InputField
+                id="password-input"
+                label="Password"
+                variant="outlined"
+                type="password"
+                fullWidth
+                value={formData.password}
+                onChange={update('password')}
+                error={!!validationErrors.password}
+                helperText={validationErrors.password}
+                onBlur={() => {
+                  setValidationErrors({
+                    ...validationErrors,
+                    password: validatePassword(formData.password),
+                  });
+                }}
+              />
+
+              <Button
+                id="submit-input"
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={styles.submitButton}
+              >
                 Sign Up
-              </button>
-            </li>
-          </ul>
-        </div>
-      </form>
-      {errorBox}
-    </div>
+              </Button>
+              <Typography variant="body2" align="center" sx={styles.loginText}>
+                Already have an account?{' '}
+                <Link component={ReactLink} to="/login" sx={styles.link}>
+                  Login
+                </Link>{' '}
+                and reconnect with your team.
+              </Typography>
+            </Stack>
+          </Box>
+        </Paper>
+
+        {errorMessages.length > 0 && (
+          <Box sx={styles.errorContainer}>
+            {errorMessages.map((error, idx) => (
+              <Alert key={idx} severity="error" sx={styles.errorAlert}>
+                {error}
+              </Alert>
+            ))}
+          </Box>
+        )}
+      </Container>
+    </>
   );
 };
+
 export default SignupForm;

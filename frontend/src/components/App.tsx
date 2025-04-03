@@ -1,11 +1,10 @@
+import { Circle } from '@mui/icons-material';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import loggedInIcon from '../assets/logged-in-icon.png';
 import { logout } from '../slices/authSlice';
 import { useAppSelector } from '../store';
 
-import { Modal } from './common/Modal';
 import MessagesArea from './messages/MessagesArea';
 import { RoomsList } from './rooms/RoomsList';
 
@@ -20,14 +19,13 @@ const MainApp = () => {
   };
 
   return (
-    <div className="main-app">
-      <Modal />
-      <div className="side-nav">
-        <header className="side-nav-header">
+    <div>
+      <div>
+        <header>
           {isAuthenticated && (
             <>
               <p id="username">
-                <img id="presence" src={loggedInIcon} alt="logged-in" /> {username}
+                <Circle fontSize="small" /> {username}
               </p>
               <button id="nav-logout" onClick={handleClick}>
                 Log Out
