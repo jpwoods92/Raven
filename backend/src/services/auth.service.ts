@@ -62,10 +62,10 @@ export class AuthService {
     token: string;
     user: { id: string; email: string; username: string };
   }> {
-    const { email, password } = loginDto;
+    const { username, password } = loginDto;
 
     // Find user
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({ where: { username } });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }

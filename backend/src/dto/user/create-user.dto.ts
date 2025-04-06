@@ -19,14 +19,26 @@ export class CreateUserDto {
 
   @IsEmail()
   @IsNotEmpty()
+  @ApiProperty({
+    example: 'john.doe@example.com',
+    description: 'Email address',
+  })
   email: string;
 
   @IsString()
   @IsNotEmpty()
-  @MinLength(8, {
-    message: 'Password must be at least 8 characters long',
+  @MinLength(10, {
+    message: 'Password must be at least 10 characters long',
   })
-  @ApiProperty({ example: 'Password123!', description: 'Password' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/, {
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+  })
+  @ApiProperty({
+    example: 'P@ssw0rd123!',
+    description:
+      'Password (min 10 chars, must include uppercase, lowercase, number, and special character)',
+  })
   password: string;
 
   @IsString()
