@@ -1,0 +1,21 @@
+Add better auth and email validation
+
+Add ability to have direct messages with other users
+
+Add ability to share a join link to a room
+
+Add p2p voice chat
+
+Add p2p video chat
+
+Add ability to create chat channels within a room
+
+Update UI styling and theme
+
+add friending and friends list
+
+update to use display name everywhere and fallback to username
+
+add hash to usernames for search optimization
+
+add ability to edit user info, including add an avatar
