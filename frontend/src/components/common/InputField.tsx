@@ -22,7 +22,7 @@ const useStyles = (_theme: Theme) => ({
   },
 });
 
-export const InputField: React.FC<TextFieldProps> = (props) => {
+export const InputField: React.FC<TextFieldProps> = ({ slotProps, ...restProps }) => {
   const theme = useTheme();
   const styles = useStyles(theme);
   return (
@@ -34,8 +34,9 @@ export const InputField: React.FC<TextFieldProps> = (props) => {
         inputLabel: {
           sx: styles.inputLabel,
         },
+        ...slotProps,
       }}
-      {...props}
+      {...restProps}
     />
   );
 };

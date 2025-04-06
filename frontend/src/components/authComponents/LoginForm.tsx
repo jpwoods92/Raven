@@ -1,10 +1,10 @@
-import { Box, Typography, Button, Container, Paper, Alert, Stack, Link } from '@mui/material';
+import { Box, Typography, Container, Paper, Alert, Stack, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import React, { useState, useEffect } from 'react';
 import { Link as ReactLink } from 'react-router-dom';
 
+import { AppButton } from '../common/AppButton';
 import { InputField } from '../common/InputField';
 import AppBar from '../nav/AppBar';
 
@@ -42,8 +42,11 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const user = { ...formState };
-    await login(user);
+    await login(user).unwrap();
   };
+
+  // Extract error messages from RTK Query error
+  const errorMessages = ((error as FetchBaseQueryError)?.data as { message: string[] })?.message;
 
   return (
     <>
@@ -78,7 +81,7 @@ const LoginForm: React.FC = () => {
                 onChange={update('password')}
               />
 
-              <Button
+              <AppButton
                 id="submit-input"
                 type="submit"
                 variant="contained"
@@ -86,7 +89,7 @@ const LoginForm: React.FC = () => {
                 sx={styles.submitButton}
               >
                 Login
-              </Button>
+              </AppButton>
               <Typography variant="body2" align="center" sx={styles.signupText}>
                 New to Raven?{' '}
                 <Link component={ReactLink} to="/signup" sx={styles.link}>
@@ -98,12 +101,13 @@ const LoginForm: React.FC = () => {
           </Box>
         </Paper>
 
-        {error && (
+        {errorMessages?.length > 0 && (
           <Box sx={styles.errorContainer}>
-            <Alert severity="error" sx={styles.errorAlert}>
-              {((error as FetchBaseQueryError)?.data as { message?: string })?.message ||
-                'An error occurred'}
-            </Alert>
+            {errorMessages.map((error, idx) => (
+              <Alert key={idx} severity="error" sx={styles.errorAlert}>
+                {error}
+              </Alert>
+            ))}
           </Box>
         )}
       </Container>

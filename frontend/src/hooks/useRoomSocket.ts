@@ -18,6 +18,7 @@ export const useRoomSocket = ({ roomId }: RoomSocketProps = {}) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [currentRoom, setCurrentRoom] = useState<string | undefined>(roomId);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [roomMembers, setRoomMembers] = useState<string[]>([]);
 
   // Get authentication state from Redux
   const { token, user } = useSelector((state: RootState) => state.auth);
@@ -43,6 +44,10 @@ export const useRoomSocket = ({ roomId }: RoomSocketProps = {}) => {
 
     newSocket.on('connect_error', (err) => {
       throw new Error(`Connection error: ${err.message}`);
+    });
+
+    newSocket.on('roomMembers', (roomMembers: string[]) => {
+      setRoomMembers(roomMembers);
     });
 
     newSocket.on('messageHistory', (messages: Message[]) => {
@@ -165,6 +170,7 @@ export const useRoomSocket = ({ roomId }: RoomSocketProps = {}) => {
     leaveRoom,
     sendMessage,
     messages,
+    roomMembers,
     listenForEvent,
     onNewMessage,
     onUserJoined,

@@ -1,5 +1,12 @@
+import { Box, FormControl, FormHelperText, Switch, Typography } from '@mui/material';
 import React, { useState, KeyboardEvent, ChangeEvent, FormEvent } from 'react';
 
+import { AppButton } from '../common/AppButton';
+import { InputField } from '../common/InputField';
+
+import { styles } from './NewRoomForm.styles';
+
+import { Modal } from '@/components/common/Modal';
 import { useCreateRoomMutation } from '@/services/room';
 import { closeModal } from '@/slices/modalSlice';
 import { useAppDispatch } from '@/store';
@@ -14,11 +21,11 @@ const NewRoomForm: React.FC = () => {
 
   const validateTitle = (value: string): { isValid: boolean; errorMessage: string | null } => {
     if (!value.trim()) {
-      return { isValid: false, errorMessage: "don't forget your title!" };
+      return { isValid: false, errorMessage: "Don't forget your title!" };
     }
 
     if (!value.match(/[a-zA-Z0-9]/g)) {
-      return { isValid: false, errorMessage: 'please input more than just symbols/spaces' };
+      return { isValid: false, errorMessage: 'Please input more than just symbols/spaces' };
     }
 
     return { isValid: true, errorMessage: null };
@@ -27,9 +34,7 @@ const NewRoomForm: React.FC = () => {
   const validation = touched ? validateTitle(title) : { isValid: false, errorMessage: null };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    // Remove disallowed characters (# and .)
-    const value = e.target.value.replace(/[#.]/g, '');
-    setTitle(value);
+    setTitle(e.target.value);
 
     if (!touched) {
       setTouched(true);
@@ -39,12 +44,12 @@ const NewRoomForm: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (validation.isValid) {
-      createRoom({ title, isPrivate });
+      createRoom({ title: title.trim(), isPrivate });
       dispatch(closeModal());
     }
   };
 
-  const handleClick = () => {
+  const handleSwitchToggle = () => {
     setIsPrivate(!isPrivate);
   };
 
@@ -56,55 +61,69 @@ const NewRoomForm: React.FC = () => {
     }
   };
 
+  const handleCancel = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setTitle('');
+    dispatch(closeModal());
+  };
+
   return (
-    <div className="newroom-form-div">
-      <h1 className="newroom-title">Create a room</h1>
-      <p className="newroom-body">
-        Rooms are where your members communicate. They&apos;re best when organized around a topic —
-        #leads, for example.
-      </p>
-      <form className="newroom-form" onKeyDown={handleKey} onSubmit={handleSubmit}>
-        <div className="switch-text-container" onClick={handleClick}>
-          <div className="switch">
-            <input type="checkbox" readOnly checked={isPrivate} />
-            <span className="slider round"></span>
-          </div>
-          <div className="text-label">Anyone in your workspace can view and join this room.</div>
-        </div>
-        <span className="title-label">Name</span>
-        {validation.errorMessage && <p className="error-text">{validation.errorMessage}</p>}
-        <input
-          maxLength={22}
-          className="newroom-input"
-          type="text"
-          autoComplete="off"
-          value={title}
-          onChange={handleChange}
-          onBlur={() => setTouched(true)}
-          placeholder="# e.g. leads"
-        />
-        <span className="input-subtext">
-          Names must be lowercase, without spaces or periods, and shorter than 22 characters.
-        </span>
-        <div className="button-container">
-          <button
-            className="cancel-button"
-            onClick={(e) => {
-              e.preventDefault();
-              dispatch(closeModal());
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            disabled={!validation.isValid}
-            className={`modal-button ${!validation.isValid ? 'disabled' : ''}`}
-          >
-            Create Room
-          </button>
-        </div>
-      </form>
-    </div>
+    <Modal>
+      <Box sx={styles.formContainer}>
+        <Typography variant="h5" component="h1" color="textPrimary" sx={styles.title}>
+          Create a room
+        </Typography>
+        <Typography variant="body1" sx={styles.description}>
+          Rooms are where you and friends communicate.
+        </Typography>
+
+        <Box component="form" onKeyDown={handleKey} onSubmit={handleSubmit}>
+          <Box sx={styles.switchContainer} onClick={handleSwitchToggle}>
+            <Switch checked={isPrivate} color="primary" onChange={handleSwitchToggle} />
+            <Typography variant="body1" color="textPrimary" sx={styles.switchLabel}>
+              Is Private
+            </Typography>
+          </Box>
+
+          <FormControl fullWidth sx={styles.formField} error={!!validation.errorMessage}>
+            <InputField
+              id="room-name"
+              label="Room Name"
+              fullWidth
+              value={title}
+              onChange={handleChange}
+              onBlur={() => setTouched(true)}
+              placeholder="e.g. Family Chat"
+              error={!!validation.errorMessage}
+              helperText={validation.errorMessage}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 22,
+                },
+              }}
+              size="small"
+            />
+            <FormHelperText sx={styles.helperText}>
+              Names must be lowercase, without spaces or periods, and shorter than 22 characters.
+            </FormHelperText>
+          </FormControl>
+
+          <Box sx={styles.buttonContainer}>
+            <AppButton variant="text" onClick={handleCancel} sx={styles.cancelButton}>
+              Cancel
+            </AppButton>
+            <AppButton
+              variant="contained"
+              type="submit"
+              disabled={!validation.isValid}
+              sx={styles.createButton}
+            >
+              Create Room
+            </AppButton>
+          </Box>
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 

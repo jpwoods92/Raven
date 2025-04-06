@@ -1,8 +1,10 @@
-import { Box, Typography, Button, Container, Paper, Alert, Stack, Link } from '@mui/material';
+import { Box, Typography, Container, Paper, Alert, Stack, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import React, { useState, useEffect } from 'react';
 import { Link as ReactLink } from 'react-router-dom';
 
+import { AppButton } from '../common/AppButton';
 import { InputField } from '../common/InputField';
 import AppBar from '../nav/AppBar';
 
@@ -66,8 +68,11 @@ const SignupForm: React.FC = () => {
   };
 
   const validatePassword = (password: string): string => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
     if (!password) return 'Password is required';
-    if (password.length < 6) return 'Password must be at least 6 characters long';
+    if (password.length < 10) return 'Password must be at least 10 characters long';
+    if (!passwordRegex.test(password))
+      return 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character';
     return '';
   };
 
@@ -109,13 +114,7 @@ const SignupForm: React.FC = () => {
   };
 
   // Extract error messages from RTK Query error
-  const errorMessages = error
-    ? [
-        'data' in error && (error.data as { message: string }).message
-          ? [(error.data as { message: string }).message]
-          : [(error as Error).message],
-      ]
-    : [];
+  const errorMessages = ((error as FetchBaseQueryError)?.data as { message: string[] })?.message;
 
   return (
     <>
@@ -183,7 +182,7 @@ const SignupForm: React.FC = () => {
                 }}
               />
 
-              <Button
+              <AppButton
                 id="submit-input"
                 type="submit"
                 variant="contained"
@@ -191,7 +190,7 @@ const SignupForm: React.FC = () => {
                 sx={styles.submitButton}
               >
                 Sign Up
-              </Button>
+              </AppButton>
               <Typography variant="body2" align="center" sx={styles.loginText}>
                 Already have an account?{' '}
                 <Link component={ReactLink} to="/login" sx={styles.link}>
@@ -203,7 +202,7 @@ const SignupForm: React.FC = () => {
           </Box>
         </Paper>
 
-        {errorMessages.length > 0 && (
+        {errorMessages?.length > 0 && (
           <Box sx={styles.errorContainer}>
             {errorMessages.map((error, idx) => (
               <Alert key={idx} severity="error" sx={styles.errorAlert}>

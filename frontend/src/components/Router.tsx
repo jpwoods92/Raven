@@ -17,7 +17,7 @@ const Router = () => {
         <Route path="/signup" element={loggedIn ? <Navigate to="/rooms" /> : <SignupForm />} />
         <Route path="/rooms" element={!loggedIn ? <Navigate to="/" /> : <App />} />
         <Route path="/rooms/:id" element={!loggedIn ? <Navigate to="/" /> : <App />} />
-        <Route path="/" element={<LoginForm />} />
+        <Route path="/" element={loggedIn ? <Navigate to="/rooms" /> : <LoginForm />} />
       </Routes>
     </BrowserRouter>
   );

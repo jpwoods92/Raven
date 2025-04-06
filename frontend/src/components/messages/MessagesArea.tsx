@@ -1,16 +1,22 @@
+import { Box, Link, Typography } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
+import NewRoomForm from '../rooms/NewRoomForm';
+
 import MessageListItem from './MessageListItem';
 import MessageNav from './MessageNav';
+import { styles } from './MessagesArea.styles';
 import NewMessageForm from './NewMessageForm';
 
 import { useRoomSocket } from '@/hooks/useRoomSocket';
-import { useAppSelector } from '@/store';
+import { openModal } from '@/slices/modalSlice';
+import { useAppDispatch, useAppSelector } from '@/store';
 import { Message } from '@/types';
 
 const MessagesArea: React.FC = () => {
   const { id = '' } = useParams();
+  const dispatch = useAppDispatch();
   const room = useAppSelector((state) => state.rooms.rooms[id as string]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -39,21 +45,35 @@ const MessagesArea: React.FC = () => {
     <MessageListItem key={message.id} message={message} />
   ));
 
+  const handleOpenNewRoomForm = () => {
+    dispatch(openModal());
+  };
+
   return (
-    <div className="messagesArea">
-      <MessageNav />
-      {room ? (
-        <div className="messages-container">
-          <ul className="message-list">
-            {messageItems}
-            <div ref={messagesEndRef}></div>
-          </ul>
-          <NewMessageForm />
-        </div>
-      ) : (
-        <div className="messages-container">Select a room to start messaging</div>
-      )}
-    </div>
+    <>
+      <NewRoomForm />
+      <Box sx={styles.messagesArea}>
+        <MessageNav />
+        {room ? (
+          <Box sx={styles.messagesContainer}>
+            <Box component="ul" sx={styles.messageList}>
+              {messageItems}
+              <Box ref={messagesEndRef} />
+            </Box>
+            <NewMessageForm />
+          </Box>
+        ) : (
+          <Box sx={styles.emptyState}>
+            <Typography>
+              Select a room to start messaging or{' '}
+              <Link sx={styles.createRoomLink} onClick={handleOpenNewRoomForm}>
+                Create A Room
+              </Link>
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    </>
   );
 };
 

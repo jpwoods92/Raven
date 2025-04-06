@@ -1,30 +1,29 @@
-import { VerifiedUserOutlined } from '@mui/icons-material';
-import React, { Fragment } from 'react';
+import { PersonOutline } from '@mui/icons-material';
+import { Box, Typography } from '@mui/material';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useGetUsersByRoomIdQuery } from '@/services/user';
+import { styles } from './MessageNav.styles';
+
+import { useRoomSocket } from '@/hooks/useRoomSocket';
 import { useAppSelector } from '@/store';
 
 const MessageNav: React.FC = () => {
   const { id = '' } = useParams();
   const room = useAppSelector((state) => state.rooms.rooms[id as string]);
 
-  const { data: members = [] } = useGetUsersByRoomIdQuery(room?.id, {
-    skip: !room?.id || room.isPrivate,
-  });
-
-  if (!room?.isPrivate) return null;
+  const { roomMembers } = useRoomSocket({ roomId: id });
 
   return (
-    <Fragment>
-      <header className="message-nav">
-        <p id="header-title">#{room?.title}</p>
-        <p id="num-users">
-          <VerifiedUserOutlined />
-          {members.length}
-        </p>
-      </header>
-    </Fragment>
+    <Box component="header" sx={styles.messageNav}>
+      <Typography sx={styles.headerTitle} color="textSecondary">
+        {room?.title}
+      </Typography>
+      <Box sx={styles.usersCount}>
+        <PersonOutline sx={styles.icon} />
+        <Typography sx={{ fontSize: '0.8rem' }}>{roomMembers.length}</Typography>
+      </Box>
+    </Box>
   );
 };
 

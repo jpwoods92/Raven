@@ -1,8 +1,10 @@
 import { AddCircleOutlined } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { Box, Typography, List, Stack } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
+import NewRoomForm from './NewRoomForm';
+import { SectionHeader, AddRoomButton } from './RoomsList.styles';
 import { RoomsListItem } from './RoomsListItem';
 
 import { useGetRoomsQuery } from '@/services/room';
@@ -16,8 +18,8 @@ export const RoomsList = () => {
 
   useGetRoomsQuery();
 
-  const handleOpenModal = (modalName: string) => {
-    dispatch(openModal(modalName));
+  const handleOpenModal = () => {
+    dispatch(openModal());
   };
 
   const { privateRooms, regularRooms } = useMemo(() => {
@@ -34,23 +36,44 @@ export const RoomsList = () => {
   }, [allRoomIds, rooms]);
 
   return (
-    <div className="rooms">
-      <div className="list-header">
-        <h2 className="rooms">Rooms</h2>
-        <IconButton onClick={() => handleOpenModal('newRoom')}>
-          <AddCircleOutlined />
-        </IconButton>
-      </div>
-      <ul className="roomsList">
-        {regularRooms.map((roomId) => (
-          <RoomsListItem key={roomId} roomId={roomId} />
-        ))}
-      </ul>
-      <ul className="roomsList">
-        {privateRooms.map((roomId) => (
-          <RoomsListItem key={roomId} roomId={roomId} />
-        ))}
-      </ul>
-    </div>
+    <>
+      <NewRoomForm />
+      <Box sx={{ height: '100%' }}>
+        <SectionHeader>
+          <Typography variant="subtitle2" fontWeight="bold" color="text.secondary">
+            PUBLIC
+          </Typography>
+        </SectionHeader>
+
+        <List disablePadding>
+          {regularRooms.map((roomId) => (
+            <RoomsListItem key={roomId} roomId={roomId} />
+          ))}
+        </List>
+
+        {privateRooms.length > 0 && (
+          <>
+            <SectionHeader sx={{ mt: 2 }}>
+              <Typography variant="subtitle2" fontWeight="bold" color="text.secondary">
+                PRIVATE
+              </Typography>
+            </SectionHeader>
+
+            <List disablePadding>
+              {privateRooms.map((roomId) => (
+                <RoomsListItem key={roomId} roomId={roomId} />
+              ))}
+            </List>
+          </>
+        )}
+
+        <AddRoomButton onClick={() => handleOpenModal()}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <AddCircleOutlined sx={{ color: 'text.secondary' }} />
+            <Typography color="text.secondary">Add New Room</Typography>
+          </Stack>
+        </AddRoomButton>
+      </Box>
+    </>
   );
 };

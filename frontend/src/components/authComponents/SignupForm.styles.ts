@@ -39,12 +39,6 @@ export const signupFormStyles = (_theme: Theme) => ({
   submitButton: {
     mt: 2,
     py: 1.5,
-    backgroundColor: 'primary.main',
-    color: 'text.primary',
-    '&:hover': {
-      backgroundColor: 'highlight.main',
-      color: 'secondary.main',
-    },
   },
   errorContainer: {
     mt: 2,
