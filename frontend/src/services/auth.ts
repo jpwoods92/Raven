@@ -31,6 +31,26 @@ export const authApi = createApi({
         body: credentials,
       }),
     }),
+    setupMfa: builder.mutation<{ qrCodeUrl: string }, void>({
+      query: () => ({
+        url: '/auth/mfa/setup',
+        method: 'POST',
+      }),
+    }),
+    verifyMfa: builder.mutation<{ success: boolean }, { token: string }>({
+      query: (data) => ({
+        url: '/auth/mfa/verify',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    verifyMfaLogin: builder.mutation<LoginResponse, { tempToken: string; token: string }>({
+      query: (data) => ({
+        url: '/auth/mfa/login',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 });
 

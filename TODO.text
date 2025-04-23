@@ -1,4 +1,4 @@
-Add better auth and email validation
+Add better auth and email validation {start:2025-04-07T19:30:51} {cm:2025-04-07} {duration:30m}
 
 Add ability to have direct messages with other users
 
@@ -18,4 +18,6 @@ update to use display name everywhere and fallback to username
 
 add hash to usernames for search optimization
 
-add ability to edit user info, including add an avatar
+
+Add settings panel for logged in users, allow changing password, display name, enable mfa, etc
+Add ability to reset password

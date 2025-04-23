@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from '../dto/auth/login.dto';
 import { RegisterDto } from '../dto/auth/register.dto';
 import { User } from '../entities/user.entity';
+import { MfaService } from './mfa.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private mfaService: MfaService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<{
@@ -59,8 +61,10 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto): Promise<{
-    token: string;
-    user: { id: string; email: string; username: string };
+    token?: string;
+    user?: { id: string; email: string; username: string };
+    requiresMfa?: boolean;
+    tempToken?: string;
   }> {
     const { username, password } = loginDto;
 
@@ -70,10 +74,42 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Check if account is locked
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      throw new UnauthorizedException('Account is locked. Try again later.');
+    }
+
     // Validate password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      // Increment failed attempts
+      user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+
+      // Lock account after 5 failed attempts
+      if (user.failedLoginAttempts >= 5) {
+        user.lockedUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+      }
+
+      await this.userRepository.save(user);
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Reset failed attempts on successful login
+    user.failedLoginAttempts = 0;
+    user.lockedUntil = null;
+    await this.userRepository.save(user);
+
+    if (user.mfaEnabled) {
+      // Generate a temporary token that only allows MFA verification
+      const tempToken = this.jwtService.sign(
+        { sub: user.id, email: user.email, requiresMfa: true },
+        { expiresIn: '5m' },
+      );
+
+      return {
+        requiresMfa: true,
+        tempToken,
+      };
     }
 
     // Generate token
@@ -98,5 +134,119 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
     return user;
+  }
+
+  async setupMfa(userId: string): Promise<{ qrCodeUrl: string }> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    const { otpAuthUrl, base32 } = this.mfaService.generateSecret(
+      user.username,
+    );
+
+    // Store the secret in the user record
+    user.mfaSecret = base32;
+    await this.userRepository.save(user);
+
+    // Generate QR code
+    const qrCodeUrl = await this.mfaService.generateQrCode(otpAuthUrl);
+
+    return { qrCodeUrl };
+  }
+
+  async verifyMfaAndEnableForUser(
+    userId: string,
+    token: string,
+  ): Promise<boolean> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    const isValid = this.mfaService.verifyToken(token, user.mfaSecret);
+
+    if (isValid) {
+      user.mfaEnabled = true;
+      await this.userRepository.save(user);
+    }
+
+    return isValid;
+  }
+
+  async verifyMfaToken(
+    userId: string,
+    token: string,
+  ): Promise<{
+    token: string;
+    user: { id: string; email: string; username: string };
+  }> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    const isValid = this.mfaService.verifyToken(token, user.mfaSecret);
+
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid MFA token');
+    }
+
+    // Generate the full access token
+    const accessToken = this.jwtService.sign({
+      sub: user.id.toString(),
+      email: user.email,
+    });
+
+    return {
+      token: accessToken,
+      user: {
+        id: user.id.toString(),
+        email: user.email,
+        username: user.username,
+      },
+    };
+  }
+
+  async generateTokens(user: User) {
+    const accessToken = this.jwtService.sign(
+      { sub: user.id, email: user.email },
+      { expiresIn: '15m' },
+    );
+
+    const refreshToken = this.jwtService.sign(
+      { sub: user.id },
+      { expiresIn: '7d' },
+    );
+
+    // Store hashed refresh token
+    user.refreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.userRepository.save(user);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async refreshAccessToken(refreshToken: string) {
+    try {
+      const decoded: { sub: string } = this.jwtService.verify(refreshToken);
+      const user = await this.userRepository.findOne({
+        where: { id: decoded.sub },
+      });
+
+      if (!user || !(await bcrypt.compare(refreshToken, user.refreshToken))) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      const accessToken = this.jwtService.sign(
+        { sub: user.id, email: user.email },
+        { expiresIn: '15m' },
+      );
+
+      return { accessToken };
+    } catch {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
   }
 }

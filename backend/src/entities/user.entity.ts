@@ -35,6 +35,23 @@ export class User {
   @Column({ default: false })
   isOnline: boolean;
 
+  @Column({ default: false })
+  mfaEnabled: boolean;
+
+  @Column()
+  @Exclude({ toPlainOnly: true })
+  mfaSecret: string;
+
+  @Column()
+  @Exclude({ toPlainOnly: true })
+  refreshToken: string;
+
+  @Column({ default: 0 })
+  failedLoginAttempts: number;
+
+  @Column({ nullable: true })
+  lockedUntil: Date | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

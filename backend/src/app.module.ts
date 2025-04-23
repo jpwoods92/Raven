@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user.module';
 import { MessageModule } from './modules/message.module';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -34,6 +35,14 @@ import { ConfigModule } from '@nestjs/config';
     RoomMembershipModule,
     MessageModule,
     AuthModule,
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60,
+          limit: 10,
+        },
+      ],
+    }),
   ],
   controllers: [],
   providers: [],
