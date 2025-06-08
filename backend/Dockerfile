@@ -10,8 +10,8 @@ RUN npm run build
 FROM node:23
 WORKDIR /app
 
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
+COPY --from=builder /dist ./dist
+COPY --from=builder /package*.json ./
 
 RUN npm ci --only=production
 

@@ -1,13 +1,13 @@
 # Multi-stage build
 FROM node:23 AS frontend-build
-WORKDIR /app/frontend
+WORKDIR /frontend
 COPY frontend/package*.json ./
 RUN npm install
 COPY frontend/ ./
 RUN npm run build
 
 FROM node:23 AS backend-build
-WORKDIR /app/backend
+WORKDIR /backend
 COPY backend/package*.json ./
 RUN npm install
 COPY backend/ ./
@@ -17,11 +17,11 @@ FROM node:23
 WORKDIR /app
 
 # Copy backend
-COPY --from=backend-build /app/backend/dist ./dist
-COPY --from=backend-build /app/backend/package*.json ./
+COPY --from=backend-build /backend/dist ./dist
+COPY --from=backend-build /backend/package*.json ./
 
 # Copy frontend build to backend's public folder
-COPY --from=frontend-build /app/frontend/public ./public
+COPY --from=frontend-build /frontend/public ./public
 
 RUN npm ci --only=production
 
