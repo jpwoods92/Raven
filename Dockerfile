@@ -1,30 +1,36 @@
-# Multi-stage build
+# Build frontend
 FROM node:23 AS frontend-build
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ ./
-RUN npm run build
+WORKDIR /app
+COPY frontend/package*.json ./frontend/
+RUN cd frontend && npm install
+COPY frontend/ ./frontend/
+RUN cd frontend && npm run build
 
+# Build backend
 FROM node:23 AS backend-build
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm install
-COPY backend/ ./
-RUN npm run build
+WORKDIR /app
+COPY backend/package*.json ./backend/
+RUN cd backend && npm install
+COPY backend/ ./backend/
+RUN cd backend && npm run build
 
+# Production stage
 FROM node:23
 WORKDIR /app
 
-# Copy backend
-COPY --from=backend-build /app/backend/dist ./dist
-COPY --from=backend-build /app/backend/package*.json ./
+# Copy backend built files
+COPY --from=backend-build /app/backend/dist ./backend/dist
+COPY --from=backend-build /app/backend/package*.json ./backend/
 
-# Copy frontend build to backend's public folder
-COPY --from=frontend-build /app/frontend/public ./public
+# Copy frontend built files
+COPY --from=frontend-build /app/frontend/public ./frontend/public
 
-RUN npm ci --only=production
+# Install backend production dependencies
+RUN cd backend && npm ci --only=production
+
+# Copy root package.json if it exists
+COPY package*.json ./
 
 EXPOSE $PORT
 
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "start"]
