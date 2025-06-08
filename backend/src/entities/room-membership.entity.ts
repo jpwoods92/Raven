@@ -15,7 +15,7 @@ export class RoomMembership {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'room_id', unique: true, nullable: false })
+  @Column({ name: 'room_id', nullable: false })
   roomId: string;
 
   @Column({ name: 'user_id', nullable: false })

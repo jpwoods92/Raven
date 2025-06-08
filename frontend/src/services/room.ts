@@ -62,9 +62,8 @@ export const roomApi = createApi({
 
     addRoomMember: builder.mutation<void, { roomId: string; newMemberId: string }>({
       query: ({ roomId, newMemberId }) => ({
-        url: `/rooms/${roomId}/members`,
+        url: `/rooms/${roomId}/members/${newMemberId}`,
         method: 'POST',
-        body: { userId: newMemberId },
       }),
       invalidatesTags: (result, error, { roomId }) => [
         { type: 'Room', id: roomId },

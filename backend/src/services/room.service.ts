@@ -153,14 +153,18 @@ export class RoomService {
       where: { roomId, userId: newMemberId },
     });
 
-    if (!existingMembership) {
-      const membership = this.roomMembershipRepository.create({
-        userId: newMemberId,
-        roomId,
-      });
-
-      await this.roomMembershipRepository.save(membership);
+    if (existingMembership) {
+      // Member already exists, don't try to add them again
+      return;
     }
+
+    // Create new membership only if it doesn't exist
+    const membership = this.roomMembershipRepository.create({
+      userId: newMemberId,
+      roomId,
+    });
+
+    await this.roomMembershipRepository.save(membership);
   }
 
   async removeMember(

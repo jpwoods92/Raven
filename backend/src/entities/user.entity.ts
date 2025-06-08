@@ -38,18 +38,18 @@ export class User {
   @Column({ default: false })
   mfaEnabled: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
   mfaSecret: string;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude({ toPlainOnly: true })
   refreshToken: string;
 
   @Column({ default: 0 })
   failedLoginAttempts: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   lockedUntil: Date | null;
 
   @CreateDateColumn({ name: 'created_at' })

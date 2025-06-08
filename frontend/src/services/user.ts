@@ -116,7 +116,7 @@ export const userApi = createApi({
 
     // Search for users
     searchUsers: builder.query<User[], string>({
-      query: (query) => `/users/search?query=${encodeURIComponent(query)}`,
+      query: (query) => `/users?search=${encodeURIComponent(query)}`,
       providesTags: [{ type: 'User', id: 'SEARCH' }],
     }),
 

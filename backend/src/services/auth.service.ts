@@ -20,7 +20,7 @@ export class AuthService {
 
   async register(registerDto: RegisterDto): Promise<{
     token: string;
-    user: { id: string; email: string; username: string };
+    user: Partial<User>;
   }> {
     const { email, password, username } = registerDto;
 
@@ -62,7 +62,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<{
     token?: string;
-    user?: { id: string; email: string; username: string };
+    user?: Partial<User>;
     requiresMfa?: boolean;
     tempToken?: string;
   }> {
@@ -179,7 +179,7 @@ export class AuthService {
     token: string,
   ): Promise<{
     token: string;
-    user: { id: string; email: string; username: string };
+    user: Partial<User>;
   }> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
