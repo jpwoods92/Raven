@@ -28,8 +28,6 @@ COPY --from=frontend-build /app/frontend/public ./frontend/public
 # Install backend production dependencies
 RUN cd backend && npm ci --only=production
 
-EXPOSE $PORT
-
 # Start the backend application from the backend directory
 WORKDIR /app/backend
 CMD ["npm", "run", "start:prod"]
