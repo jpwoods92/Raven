@@ -32,4 +32,4 @@ EXPOSE $PORT
 
 # Start the backend application from the backend directory
 WORKDIR /app/backend
-CMD ["npm", "start"]
+CMD ["npm", "start:prod"]
