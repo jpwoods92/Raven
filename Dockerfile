@@ -28,9 +28,8 @@ COPY --from=frontend-build /app/frontend/public ./frontend/public
 # Install backend production dependencies
 RUN cd backend && npm ci --only=production
 
-# Copy root package.json if it exists
-COPY package*.json ./
-
 EXPOSE $PORT
 
+# Start the backend application from the backend directory
+WORKDIR /app/backend
 CMD ["npm", "start"]
