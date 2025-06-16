@@ -23,7 +23,7 @@ COPY --from=backend-build /app/backend/dist ./backend/dist
 COPY --from=backend-build /app/backend/package*.json ./backend/
 
 # Copy frontend built files
-COPY --from=frontend-build /app/frontend/public ./frontend/public
+COPY --from=frontend-build /app/frontend/dist ./backend/public
 
 # Install backend production dependencies
 RUN cd backend && npm ci --only=production
