@@ -10,6 +10,7 @@ import { Modal } from '@/components/common/Modal';
 import { useCreateRoomMutation } from '@/services/room';
 import { closeModal } from '@/slices/modalSlice';
 import { useAppDispatch } from '@/store';
+import { validateRoomTitle } from '@/utils/validateRoomTitle';
 
 const NewRoomForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,19 +20,7 @@ const NewRoomForm: React.FC = () => {
 
   const [createRoom] = useCreateRoomMutation();
 
-  const validateTitle = (value: string): { isValid: boolean; errorMessage: string | null } => {
-    if (!value.trim()) {
-      return { isValid: false, errorMessage: "Don't forget your title!" };
-    }
-
-    if (!value.match(/[a-zA-Z0-9]/g)) {
-      return { isValid: false, errorMessage: 'Please input more than just symbols/spaces' };
-    }
-
-    return { isValid: true, errorMessage: null };
-  };
-
-  const validation = touched ? validateTitle(title) : { isValid: false, errorMessage: null };
+  const validation = touched ? validateRoomTitle(title) : { isValid: false, errorMessage: null };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
