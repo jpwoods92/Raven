@@ -64,6 +64,6 @@ export class User {
   @OneToMany(() => Message, (message) => message.user)
   messages: Message[];
 
-  @OneToMany(() => Room, (room) => room.ownerId)
+  @OneToMany(() => Room, (room) => room.owner)
   ownedRooms: Room[];
 }
