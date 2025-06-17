@@ -6,7 +6,7 @@ export interface User {
   updatedAt: string;
   avatar?: string;
   isOnline?: boolean;
-  displayname?: string;
+  displayName?: string;
 }
 
 export interface Room {

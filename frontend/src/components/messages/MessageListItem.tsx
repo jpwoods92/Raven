@@ -20,7 +20,7 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message }) => {
       <Box sx={styles.messageContents}>
         <Box sx={styles.headerContainer}>
           <Typography sx={styles.username} color="textSecondary">
-            {message.user?.displayname || message.user?.username}
+            {message.user?.displayName || message.user?.username}
           </Typography>
           <Typography sx={styles.timestamp} color="textSecondary">
             {new Date(message.createdAt).toLocaleTimeString([], {
