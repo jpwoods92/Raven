@@ -3,11 +3,14 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { RoomMembership } from './room-membership.entity';
 import { Message } from './message.entity';
+import { User } from './user.entity';
 
 @Entity('room')
 export class Room {
@@ -16,6 +19,10 @@ export class Room {
 
   @Column({ name: 'owner_id', nullable: false })
   ownerId: string;
+
+  @ManyToOne(() => User, (user) => user.ownedRooms)
+  @JoinColumn({ name: 'owner_id' })
+  owner: User;
 
   @Column({ name: 'title', nullable: false })
   title: string;
