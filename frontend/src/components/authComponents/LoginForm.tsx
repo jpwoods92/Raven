@@ -17,6 +17,11 @@ interface Form {
   username: string;
 }
 
+interface ValidationErrors {
+  username: string;
+  password: string;
+}
+
 const LoginForm: React.FC = () => {
   const theme = useTheme();
   const styles = loginFormStyles(theme);
@@ -26,6 +31,11 @@ const LoginForm: React.FC = () => {
     username: '',
   });
 
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({
+    username: '',
+    password: '',
+  });
+
   const [login, { error }] = useLoginMutation();
 
   useEffect(() => {
@@ -33,14 +43,45 @@ const LoginForm: React.FC = () => {
       username: '',
       password: '',
     });
+    setValidationErrors({
+      username: '',
+      password: '',
+    });
   }, []);
 
   const update = (field: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormState({ ...formState, [field]: e.target.value });
+    setValidationErrors({ ...validationErrors, [field]: '' });
+  };
+
+  const validateUsername = (username: string): string => {
+    if (!username) return 'Username is required';
+    return '';
+  };
+
+  const validatePassword = (password: string): string => {
+    if (!password) return 'Password is required';
+    return '';
+  };
+
+  const validateForm = (): boolean => {
+    const usernameError = validateUsername(formState.username);
+    const passwordError = validatePassword(formState.password);
+
+    setValidationErrors({
+      username: usernameError,
+      password: passwordError,
+    });
+
+    return !usernameError && !passwordError;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+
     const user = { ...formState };
     await login(user).unwrap();
   };
@@ -69,6 +110,14 @@ const LoginForm: React.FC = () => {
                 fullWidth
                 value={formState.username}
                 onChange={update('username')}
+                error={!!validationErrors.username}
+                helperText={validationErrors.username}
+                onBlur={() => {
+                  setValidationErrors({
+                    ...validationErrors,
+                    username: validateUsername(formState.username),
+                  });
+                }}
               />
 
               <InputField
@@ -79,6 +128,14 @@ const LoginForm: React.FC = () => {
                 fullWidth
                 value={formState.password}
                 onChange={update('password')}
+                error={!!validationErrors.password}
+                helperText={validationErrors.password}
+                onBlur={() => {
+                  setValidationErrors({
+                    ...validationErrors,
+                    password: validatePassword(formState.password),
+                  });
+                }}
               />
 
               <AppButton
