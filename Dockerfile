@@ -4,8 +4,11 @@ WORKDIR /app
 COPY frontend/package*.json ./frontend/
 RUN cd frontend && npm install
 COPY frontend/ ./frontend/
+
+# Generate .env file for frontend build
 ARG REACT_APP_BACKEND_URL
-ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL 
+RUN echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" > ./frontend/.env
+
 RUN cd frontend && npm run build
 
 # Build backend
