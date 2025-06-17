@@ -7,7 +7,7 @@ COPY frontend/ ./frontend/
 
 # Generate .env file for frontend build
 ARG REACT_APP_BACKEND_URL
-RUN echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL" > ./frontend/.env
+RUN echo "REACT_APP_BACKEND_URL=https://raven-chat-4c7cd8c30f2b.herokuapp.com/" > ./frontend/.env
 
 RUN cd frontend && npm run build
 
