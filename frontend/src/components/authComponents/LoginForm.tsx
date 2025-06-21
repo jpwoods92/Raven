@@ -87,7 +87,8 @@ const LoginForm: React.FC = () => {
   };
 
   // Extract error messages from RTK Query error
-  const errorMessages = ((error as FetchBaseQueryError)?.data as { message: string[] })?.message;
+  const errorMessages = ((error as FetchBaseQueryError)?.data as { message: string | string[] })
+    ?.message;
 
   return (
     <>
@@ -158,13 +159,19 @@ const LoginForm: React.FC = () => {
           </Box>
         </Paper>
 
-        {errorMessages?.length > 0 && (
+        {errorMessages && (
           <Box sx={styles.errorContainer}>
-            {errorMessages.map((error, idx) => (
-              <Alert key={idx} severity="error" sx={styles.errorAlert}>
-                {error}
+            {Array.isArray(errorMessages) ? (
+              errorMessages.map((error, idx) => (
+                <Alert key={idx} severity="error" sx={styles.errorAlert}>
+                  {error}
+                </Alert>
+              ))
+            ) : (
+              <Alert severity="error" sx={styles.errorAlert}>
+                {errorMessages}
               </Alert>
-            ))}
+            )}
           </Box>
         )}
       </Container>
