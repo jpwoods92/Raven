@@ -1,0 +1,32 @@
+# Global ownership - jpwoods92 owns everything by default
+* @jpwoods92
+
+# Backend specific ownership
+/backend/ @jpwoods92
+/backend/src/ @jpwoods92
+/backend/src/controllers/ @jpwoods92
+/backend/src/services/ @jpwoods92
+/backend/src/entities/ @jpwoods92
+/backend/src/dto/ @jpwoods92
+/backend/src/gateways/ @jpwoods92
+
+# Frontend specific ownership
+/frontend/ @jpwoods92
+/frontend/src/ @jpwoods92
+/frontend/src/components/ @jpwoods92
+/frontend/src/services/ @jpwoods92
+/frontend/src/slices/ @jpwoods92
+
+# Docker and deployment files
+/Dockerfile @jpwoods92
+/docker-compose*.yml @jpwoods92
+/heroku.yml @jpwoods92
+
+# Configuration files
+/package.json @jpwoods92
+/package-lock.json @jpwoods92
+/.env* @jpwoods92
+
+# Documentation
+/README.md @jpwoods92
+/TODO.text @jpwoods92
