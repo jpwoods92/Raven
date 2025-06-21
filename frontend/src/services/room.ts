@@ -2,10 +2,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { Room } from '../types';
 
+import { BASE_URL } from './constants';
+
 export const roomApi = createApi({
   reducerPath: 'roomApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000',
+    baseUrl: BASE_URL,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prepareHeaders: (headers, { getState }: { getState: () => any }) => {
       // Get the token from auth state
