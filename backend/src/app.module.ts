@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path/posix';
+import { join } from 'path';
 import { AuthModule } from './modules/auth.module';
 import { RoomModule } from './modules/room.module';
 import { RoomMembershipModule } from './modules/room-membership.module';
@@ -44,6 +44,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
+      exclude: ['/api*'],
     }),
     UserModule,
     RoomModule,
