@@ -52,7 +52,7 @@ const MessageNav: React.FC = () => {
       {room?.isPrivate && (
         <UserSearch onChange={handleAddUser} userIdsToFilterOut={Object.keys(allRoomMembers)} />
       )}
-      <Tooltip title={roomMembers.map((userId) => allRoomMembers[userId].username).join(', ')}>
+      <Tooltip title={roomMembers.map((userId) => allRoomMembers[userId]?.username)?.join(', ')}>
         <Box sx={styles.usersCount}>
           <PersonOutline sx={styles.icon} />
           <Typography sx={{ fontSize: '0.8rem' }}>{roomMembers.length}</Typography>
