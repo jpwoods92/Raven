@@ -1,6 +1,6 @@
 import { PersonOutline } from '@mui/icons-material';
 import { Box, Tooltip, Typography } from '@mui/material';
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { UserSearch } from '../common/UserSearch';
