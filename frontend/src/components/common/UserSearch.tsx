@@ -13,6 +13,7 @@ export const UserSearch: FC<UserSearchProps> = ({ onChange, userIdsToFilterOut =
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState<readonly User[]>([]);
   const [loading, setLoading] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   const [searchUsers] = useLazySearchUsersQuery();
 
@@ -50,7 +51,14 @@ export const UserSearch: FC<UserSearchProps> = ({ onChange, userIdsToFilterOut =
       onClose={handleClose}
       isOptionEqualToValue={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.username}
-      onChange={(_e, value) => onChange(value)}
+      onChange={(_e, value) => {
+        onChange(value);
+        setInputValue('');
+      }}
+      onInputChange={(_e, newInputValue) => {
+        setInputValue(newInputValue);
+      }}
+      inputValue={inputValue}
       filterOptions={(x) => x}
       options={options}
       loading={loading}
