@@ -14,6 +14,7 @@ import { useRegisterMutation } from '@/services/auth';
 
 interface UserFormData {
   username: string;
+  displayName: string;
   email: string;
   password: string;
 }
@@ -24,35 +25,33 @@ interface ValidationErrors {
   password: string;
 }
 
+const DEFAULT_FORM_STATE = {
+  username: '',
+  displayName: '',
+  email: '',
+  password: '',
+};
+
+const DEFAULT_VALIDATION_STATE = {
+  username: '',
+  email: '',
+  password: '',
+};
+
 const SignupForm: React.FC = () => {
   const theme = useTheme();
   const styles = signupFormStyles(theme);
 
-  const [formData, setFormData] = useState<UserFormData>({
-    username: '',
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState<UserFormData>(DEFAULT_FORM_STATE);
 
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({
-    username: '',
-    email: '',
-    password: '',
-  });
+  const [validationErrors, setValidationErrors] =
+    useState<ValidationErrors>(DEFAULT_VALIDATION_STATE);
 
   const [register, { error }] = useRegisterMutation();
 
   useEffect(() => {
-    setFormData({
-      username: '',
-      email: '',
-      password: '',
-    });
-    setValidationErrors({
-      username: '',
-      email: '',
-      password: '',
-    });
+    setFormData(DEFAULT_FORM_STATE);
+    setValidationErrors(DEFAULT_VALIDATION_STATE);
   }, []);
 
   const validateUsername = (username: string): string => {
@@ -114,7 +113,8 @@ const SignupForm: React.FC = () => {
   };
 
   // Extract error messages from RTK Query error
-  const errorMessages = ((error as FetchBaseQueryError)?.data as { message: string[] })?.message;
+  const errorMessages = ((error as FetchBaseQueryError)?.data as { message: string | string[] })
+    ?.message;
 
   return (
     <>
@@ -165,6 +165,15 @@ const SignupForm: React.FC = () => {
               />
 
               <InputField
+                id="displayName-input"
+                label="Display Name (Optional)"
+                variant="outlined"
+                fullWidth
+                value={formData.displayName}
+                onChange={update('displayName')}
+              />
+
+              <InputField
                 id="password-input"
                 label="Password"
                 variant="outlined"
@@ -202,13 +211,19 @@ const SignupForm: React.FC = () => {
           </Box>
         </Paper>
 
-        {errorMessages?.length > 0 && (
+        {errorMessages && (
           <Box sx={styles.errorContainer}>
-            {errorMessages.map((error, idx) => (
-              <Alert key={idx} severity="error" sx={styles.errorAlert}>
-                {error}
+            {Array.isArray(errorMessages) ? (
+              errorMessages.map((error, idx) => (
+                <Alert key={idx} severity="error" sx={styles.errorAlert}>
+                  {error}
+                </Alert>
+              ))
+            ) : (
+              <Alert severity="error" sx={styles.errorAlert}>
+                {errorMessages}
               </Alert>
-            ))}
+            )}
           </Box>
         )}
       </Container>

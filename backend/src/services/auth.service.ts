@@ -22,14 +22,16 @@ export class AuthService {
     token: string;
     user: Partial<User>;
   }> {
-    const { email, password, username } = registerDto;
+    const { email, password, username, displayName } = registerDto;
 
     // Check if user already exists
     const existingUser = await this.userRepository.findOne({
-      where: { email },
+      where: [{ email }, { username }],
     });
+
     if (existingUser) {
-      throw new UnauthorizedException('Email already in use');
+      const field = existingUser.email === email ? 'Email' : 'Username';
+      throw new UnauthorizedException(`${field} already in use`);
     }
 
     // Hash password
@@ -40,6 +42,7 @@ export class AuthService {
       email,
       password: hashedPassword,
       username,
+      displayName,
     });
 
     await this.userRepository.save(newUser);
@@ -55,6 +58,7 @@ export class AuthService {
       user: {
         id: newUser.id,
         email: newUser.email,
+        displayName: newUser.displayName,
         username: newUser.username,
       },
     };
@@ -123,6 +127,7 @@ export class AuthService {
       user: {
         id: user.id.toString(),
         email: user.email,
+        displayName: user.displayName,
         username: user.username,
       },
     };

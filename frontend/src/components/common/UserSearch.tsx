@@ -67,7 +67,7 @@ export const UserSearch: FC<UserSearchProps> = ({ onChange, userIdsToFilterOut =
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Add Members..."
+          label="Search By Username"
           onChange={handleSearchUsers}
           slotProps={{
             input: {

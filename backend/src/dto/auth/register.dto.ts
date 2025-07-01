@@ -25,4 +25,7 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Username is required' })
   @ApiProperty({ example: 'john_doe', description: 'Username' })
   username: string;
+
+  @ApiProperty({ example: 'John', description: 'Display Name' })
+  displayName: string;
 }

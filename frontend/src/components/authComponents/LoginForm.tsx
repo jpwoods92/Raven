@@ -22,31 +22,24 @@ interface ValidationErrors {
   password: string;
 }
 
+const DEFAULT_STATE = {
+  username: '',
+  password: '',
+};
+
 const LoginForm: React.FC = () => {
   const theme = useTheme();
   const styles = loginFormStyles(theme);
 
-  const [formState, setFormState] = useState<Form>({
-    password: '',
-    username: '',
-  });
+  const [formState, setFormState] = useState<Form>(DEFAULT_STATE);
 
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({
-    username: '',
-    password: '',
-  });
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(DEFAULT_STATE);
 
   const [login, { error }] = useLoginMutation();
 
   useEffect(() => {
-    setFormState({
-      username: '',
-      password: '',
-    });
-    setValidationErrors({
-      username: '',
-      password: '',
-    });
+    setFormState(DEFAULT_STATE);
+    setValidationErrors(DEFAULT_STATE);
   }, []);
 
   const update = (field: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => {

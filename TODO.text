@@ -14,7 +14,7 @@ Update UI styling and theme
 
 add friending and friends list
 
-update to use display name everywhere and fallback to username
+update to use display name everywhere and fallback to username {start:2025-07-01T18:13:45} {cm:2025-07-01} {duration:38m}
 
 add hash to usernames for search optimization
 
@@ -30,3 +30,4 @@ change adding users pattern to inviting users
 
 Add settings panel for logged in users, allow changing password, display name, enable mfa, etc
 Add ability to reset password
+allow clicking status indicator to change status, show status to other users 

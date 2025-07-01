@@ -4,6 +4,7 @@ import React from 'react';
 import { styles } from './MessageListItem.styles';
 
 import { Message } from '@/types';
+import { getUserDisplayName } from '@/utils/user';
 
 interface MessageListItemProps {
   message: Message;
@@ -15,12 +16,12 @@ const MessageListItem: React.FC<MessageListItemProps> = ({ message }) => {
   return (
     <Box component="li" sx={styles.messageListItem}>
       <Box sx={styles.avatarContainer}>
-        <Avatar src={message.user?.avatar} alt={message.user?.username || ''} />
+        <Avatar src={message.user?.avatar} alt={getUserDisplayName(message.user) || ''} />
       </Box>
       <Box sx={styles.messageContents}>
         <Box sx={styles.headerContainer}>
           <Typography sx={styles.username} color="textSecondary">
-            {message.user?.displayName || message.user?.username}
+            {getUserDisplayName(message.user)}
           </Typography>
           <Typography sx={styles.timestamp} color="textSecondary">
             {new Date(message.createdAt).toLocaleTimeString([], {

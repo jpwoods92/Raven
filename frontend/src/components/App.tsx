@@ -11,10 +11,12 @@ import { AppButton } from './common/AppButton';
 import MessagesArea from './messages/MessagesArea';
 import { RoomsList } from './rooms/RoomsList';
 
+import { getUserDisplayName } from '@/utils/user';
+
 const MainApp = () => {
   const dispatch = useDispatch();
   const avatar = useAppSelector((state) => state.auth.user?.avatar);
-  const username = useAppSelector((state) => state.auth.user?.username);
+  const username = useAppSelector((state) => getUserDisplayName(state.auth.user));
   const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {

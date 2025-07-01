@@ -12,6 +12,7 @@ import { useAddRoomMemberMutation } from '@/services/room';
 import { useGetUsersByRoomIdQuery } from '@/services/user';
 import { useAppSelector } from '@/store';
 import { User } from '@/types';
+import { getUserDisplayName } from '@/utils/user';
 
 const MessageNav: React.FC = () => {
   const { id = '' } = useParams();
@@ -48,7 +49,7 @@ const MessageNav: React.FC = () => {
         <UserSearch onChange={handleAddUser} userIdsToFilterOut={Object.keys(allRoomMembers)} />
       )}
       <Tooltip
-        title={`Online: ${roomMembers.map((userId) => allRoomMembers[userId]?.username)?.join(', ')}`}
+        title={`Online: ${roomMembers.map((userId) => getUserDisplayName(allRoomMembers[userId]))?.join(', ')}`}
       >
         <Box sx={styles.usersCount}>
           <PersonOutline sx={styles.icon} />
