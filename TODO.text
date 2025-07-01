@@ -18,6 +18,15 @@ update to use display name everywhere and fallback to username
 
 add hash to usernames for search optimization
 
+allow users to edit and delete messages
+
+allow room owners to remove members
+
+add notifications so users know when they are invited to rooms
+
+add "@"ing other users
+
+change adding users pattern to inviting users
 
 Add settings panel for logged in users, allow changing password, display name, enable mfa, etc
 Add ability to reset password
